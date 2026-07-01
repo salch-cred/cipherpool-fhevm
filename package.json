@@ -1,0 +1,23 @@
+{
+  "name": "cipherpool-fhevm",
+  "version": "0.1.0",
+  "description": "CipherTrust: confidential underwriting protocol for autonomous agents & robots, built on Zama's fhEVM.",
+  "license": "MIT",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia"
+  },
+  "devDependencies": {
+    "@fhevm/hardhat-plugin": "^0.1.0",
+    "@fhevm/solidity": "^0.7.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.0",
+    "typescript": "^5.5.0",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  }
+}
