@@ -4,6 +4,14 @@ pragma solidity ^0.8.24;
 import {FHE, euint64, ebool, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
 import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
+interface IReputationBadge {
+    function mintOrUpgrade(uint256 agentId, address operator, uint8 tier) external;
+}
+
+interface IInsurancePool {
+    function receivePenalty(uint256 agentId) external payable;
+}
+
 /**
  * @title CipherTrust
  * @notice Confidential underwriting protocol for autonomous agents & robots.
@@ -11,7 +19,7 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
  * Autonomous AI trading bots, delivery robots, drone fleets, and DePIN devices
  * increasingly hold funds and execute tasks without human supervision. There is
  * no confidential way today to score their reliability and price the
- * collateral/insurance they must post — any naive on-chain reputation system
+ * collateral/insurance they must post -- any naive on-chain reputation system
  * leaks competitively sensitive operational data (uptime, error rates, routes,
  * strategy performance) to rivals, because blockchains are public by default.
  *
@@ -20,9 +28,22 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
  * marketplaces can rely on the *outcome* (bond tier, sufficiency check)
  * without ever seeing the raw encrypted telemetry that produced it.
  *
- * NOTE: this is an MVP scaffold. Verify every FHE.* call against the exact
- * current version of @fhevm/solidity pinned in package.json before deploying
- * to a live network — the FHE Solidity API surface evolves between releases.
+ * v0.2 additions (see docs/COMPETITIVE_ANALYSIS.md for why these were added):
+ *  - Multi-oracle quorum: telemetry only affects the score once N independent
+ *    oracles agree within a round, reducing single-oracle trust assumptions.
+ *  - Async confidential slashing: an oracle can request a confidential SLA
+ *    breach check; the breach flag is decrypted via Zama's public-decrypt +
+ *    signature-verification flow before any penalty is applied on-chain.
+ *  - Optional composability hooks into a soulbound ReputationBadge (public,
+ *    selectively-revealed trust tier) and an InsurancePool (LP yield funded
+ *    by slashing penalties), so other protocols can build on CipherTrust's
+ *    output without ever touching an agent's raw telemetry.
+ *
+ * NOTE: this is an MVP scaffold. Verify every FHE.* call (especially the
+ * makePubliclyDecryptable / checkSignatures async-decrypt flow) against the
+ * exact current version of @fhevm/solidity pinned in package.json before
+ * deploying to a live network -- the FHE Solidity API surface evolves
+ * between releases, and this flow has not yet been compiled/tested.
  */
 contract CipherTrust is SepoliaConfig {
     address public admin;
@@ -32,15 +53,42 @@ contract CipherTrust is SepoliaConfig {
         address operator;
         bool registered;
         bool active;
-        euint64 trustScore;    // encrypted, 0-1000 scale
-        euint64 requiredBond;  // encrypted, wei
-        uint256 postedBond;    // public collateral currently deposited (wei)
-        ebool bondSufficient;  // encrypted boolean: postedBond >= requiredBond
+        uint256 identityId; // optional link into AgentIdentityRegistry, 0 if unset
+        euint64 trustScore; // encrypted, 0-1000 scale
+        euint64 requiredBond; // encrypted, wei
+        uint256 postedBond; // public collateral currently deposited (wei)
+        ebool bondSufficient; // encrypted boolean: postedBond >= requiredBond
+        uint256 breachCount; // public count of confirmed SLA breaches
+    }
+
+    struct PendingRound {
+        uint32 count;
+        bool initialized;
+        euint64 sumCompletion;
+        euint64 sumUptime;
+        euint64 sumLatency;
+        euint64 sumError;
     }
 
     mapping(uint256 => Agent) private _agents;
     mapping(address => bool) public authorizedOracles;
     mapping(address => bool) public authorizedUnderwriters;
+
+    mapping(uint256 => PendingRound) private _pendingRounds; // agentId => in-flight quorum round
+    mapping(uint256 => uint256) public currentRoundId; // agentId => round id
+    mapping(uint256 => mapping(address => uint256)) private _oracleLastRound; // agentId => oracle => last round id + 1 submitted
+    uint32 public quorumThreshold = 1; // number of independent oracles required per round
+
+    uint256 public nextTierRequestId = 1;
+    mapping(uint256 => uint256) public tierRequestAgent;
+    mapping(uint256 => bytes32) public tierRequestHandle;
+
+    uint256 public nextSlashRequestId = 1;
+    mapping(uint256 => uint256) public slashRequestAgent;
+    mapping(uint256 => bytes32) public slashRequestHandle;
+
+    IReputationBadge public reputationBadge;
+    IInsurancePool public insurancePool;
 
     uint64 private constant W_COMPLETION = 40;
     uint64 private constant W_UPTIME = 30;
@@ -54,12 +102,22 @@ contract CipherTrust is SepoliaConfig {
     uint64 private constant MED_TRUST_BOND = uint64(1 ether);
     uint64 private constant LOW_TRUST_BOND = uint64(5 ether);
 
-    event AgentRegistered(uint256 indexed agentId, address indexed operator);
+    uint256 private constant SLASH_BPS = 1000; // 10% of posted bond
+
+    event AgentRegistered(uint256 indexed agentId, address indexed operator, uint256 identityId);
     event OracleAuthorized(address indexed oracle);
     event UnderwriterAuthorized(address indexed underwriter);
-    event TelemetrySubmitted(uint256 indexed agentId, address indexed oracle);
+    event TelemetrySubmitted(uint256 indexed agentId, address indexed oracle, uint256 roundId);
+    event ScoreUpdated(uint256 indexed agentId, uint256 roundId);
     event BondDeposited(uint256 indexed agentId, uint256 amount, uint256 totalPosted);
     event BondWithdrawn(uint256 indexed agentId, uint256 amount);
+    event TierRevealRequested(uint256 indexed agentId, uint256 indexed requestId);
+    event TierRevealed(uint256 indexed agentId, uint64 tierCode);
+    event SlashCheckRequested(uint256 indexed agentId, uint256 indexed requestId);
+    event SlashCheckFulfilled(uint256 indexed agentId, bool breached);
+    event AgentSlashed(uint256 indexed agentId, uint256 penalty);
+    event ReputationBadgeSet(address indexed badge);
+    event InsurancePoolSet(address indexed pool);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "CipherTrust: not admin");
@@ -80,6 +138,23 @@ contract CipherTrust is SepoliaConfig {
         admin = msg.sender;
     }
 
+    function setQuorumThreshold(uint32 threshold) external onlyAdmin {
+        require(threshold >= 1, "CipherTrust: invalid threshold");
+        quorumThreshold = threshold;
+    }
+
+    function setReputationBadge(address badge) external onlyAdmin {
+        require(address(reputationBadge) == address(0), "CipherTrust: badge already set");
+        reputationBadge = IReputationBadge(badge);
+        emit ReputationBadgeSet(badge);
+    }
+
+    function setInsurancePool(address pool) external onlyAdmin {
+        require(address(insurancePool) == address(0), "CipherTrust: pool already set");
+        insurancePool = IInsurancePool(pool);
+        emit InsurancePoolSet(pool);
+    }
+
     function authorizeOracle(address oracle) external onlyAdmin {
         authorizedOracles[oracle] = true;
         emit OracleAuthorized(oracle);
@@ -91,12 +166,14 @@ contract CipherTrust is SepoliaConfig {
     }
 
     /// @notice Register a new autonomous agent/robot under a given operator.
-    function registerAgent(address operator) external onlyAdmin returns (uint256 agentId) {
+    /// @param identityId optional AgentIdentityRegistry id (0 if not using the registry).
+    function registerAgent(address operator, uint256 identityId) external onlyAdmin returns (uint256 agentId) {
         agentId = nextAgentId++;
         Agent storage a = _agents[agentId];
         a.operator = operator;
         a.registered = true;
         a.active = true;
+        a.identityId = identityId;
         a.trustScore = FHE.asEuint64(500); // neutral starting score
         a.requiredBond = FHE.asEuint64(MED_TRUST_BOND);
 
@@ -105,12 +182,13 @@ contract CipherTrust is SepoliaConfig {
         FHE.allow(a.trustScore, operator);
         FHE.allow(a.requiredBond, operator);
 
-        emit AgentRegistered(agentId, operator);
+        emit AgentRegistered(agentId, operator, identityId);
     }
 
     /// @notice Submit fully-encrypted telemetry for a completed task. Only
-    /// authorized oracles (operator-run attestors, task marketplaces, or
-    /// hardware-attested feeds) may call this.
+    /// authorized oracles may call this. The submission only affects the
+    /// agent's score once `quorumThreshold` independent oracles have
+    /// submitted within the current round.
     function submitTelemetry(
         uint256 agentId,
         externalEuint64 completionScore,
@@ -122,10 +200,58 @@ contract CipherTrust is SepoliaConfig {
         Agent storage a = _agents[agentId];
         require(a.registered && a.active, "CipherTrust: unknown or inactive agent");
 
+        uint256 roundId = currentRoundId[agentId];
+        require(_oracleLastRound[agentId][msg.sender] != roundId + 1, "CipherTrust: already submitted this round");
+        _oracleLastRound[agentId][msg.sender] = roundId + 1;
+
         euint64 completion = FHE.fromExternal(completionScore, inputProof);
         euint64 uptime = FHE.fromExternal(uptimeScore, inputProof);
         euint64 latency = FHE.fromExternal(latencyScore, inputProof);
         euint64 errorP = FHE.fromExternal(errorScore, inputProof);
+
+        PendingRound storage round = _pendingRounds[agentId];
+        if (!round.initialized) {
+            round.sumCompletion = completion;
+            round.sumUptime = uptime;
+            round.sumLatency = latency;
+            round.sumError = errorP;
+            round.initialized = true;
+        } else {
+            round.sumCompletion = FHE.add(round.sumCompletion, completion);
+            round.sumUptime = FHE.add(round.sumUptime, uptime);
+            round.sumLatency = FHE.add(round.sumLatency, latency);
+            round.sumError = FHE.add(round.sumError, errorP);
+        }
+        round.count += 1;
+        FHE.allowThis(round.sumCompletion);
+        FHE.allowThis(round.sumUptime);
+        FHE.allowThis(round.sumLatency);
+        FHE.allowThis(round.sumError);
+
+        emit TelemetrySubmitted(agentId, msg.sender, roundId);
+
+        if (round.count >= quorumThreshold) {
+            euint64 avgCompletion = FHE.div(round.sumCompletion, quorumThreshold);
+            euint64 avgUptime = FHE.div(round.sumUptime, quorumThreshold);
+            euint64 avgLatency = FHE.div(round.sumLatency, quorumThreshold);
+            euint64 avgError = FHE.div(round.sumError, quorumThreshold);
+
+            _applyScoreUpdate(agentId, avgCompletion, avgUptime, avgLatency, avgError);
+
+            delete _pendingRounds[agentId];
+            currentRoundId[agentId] = roundId + 1;
+            emit ScoreUpdated(agentId, roundId);
+        }
+    }
+
+    function _applyScoreUpdate(
+        uint256 agentId,
+        euint64 completion,
+        euint64 uptime,
+        euint64 latency,
+        euint64 errorP
+    ) private {
+        Agent storage a = _agents[agentId];
 
         euint64 weighted = FHE.add(
             FHE.add(FHE.mul(completion, W_COMPLETION), FHE.mul(uptime, W_UPTIME)),
@@ -149,8 +275,6 @@ contract CipherTrust is SepoliaConfig {
         FHE.allow(a.trustScore, a.operator);
         FHE.allow(a.requiredBond, a.operator);
         FHE.allow(a.bondSufficient, a.operator);
-
-        emit TelemetrySubmitted(agentId, msg.sender);
     }
 
     /// @dev Confidential decision-tree: three bond tiers selected entirely
@@ -195,7 +319,7 @@ contract CipherTrust is SepoliaConfig {
     }
 
     /// @notice Grant an authorized underwriter/insurer read access to an
-    /// agent's encrypted trust score, required bond, and sufficiency flag —
+    /// agent's encrypted trust score, required bond, and sufficiency flag --
     /// without exposing the raw telemetry that produced them.
     function grantUnderwriterAccess(uint256 agentId, address underwriter) external onlyAgentOperator(agentId) {
         require(authorizedUnderwriters[underwriter], "CipherTrust: underwriter not authorized");
@@ -205,13 +329,107 @@ contract CipherTrust is SepoliaConfig {
         FHE.allow(a.bondSufficient, underwriter);
     }
 
+    /// @notice Operator opts in to publicly reveal only the *tier* (Low/Medium/High)
+    /// of their agent's trust score -- never the exact score -- so a soulbound
+    /// ReputationBadge can be minted/upgraded. This is a selective disclosure,
+    /// not a default: the raw score stays encrypted unless the operator calls this.
+    function requestTierReveal(uint256 agentId) external onlyAgentOperator(agentId) returns (uint256 requestId) {
+        Agent storage a = _agents[agentId];
+        ebool highTrust = FHE.ge(a.trustScore, FHE.asEuint64(HIGH_TRUST_THRESHOLD));
+        ebool medTrust = FHE.ge(a.trustScore, FHE.asEuint64(MED_TRUST_THRESHOLD));
+        euint64 tierCode = FHE.select(highTrust, FHE.asEuint64(3), FHE.select(medTrust, FHE.asEuint64(2), FHE.asEuint64(1)));
+        FHE.allowThis(tierCode);
+        FHE.makePubliclyDecryptable(tierCode);
+
+        requestId = nextTierRequestId++;
+        tierRequestAgent[requestId] = agentId;
+        tierRequestHandle[requestId] = euint64.unwrap(tierCode);
+        emit TierRevealRequested(agentId, requestId);
+    }
+
+    /// @notice Called with the Zama KMS's decrypted cleartext + proof (via the
+    /// relayer SDK's public-decrypt flow) to finalize a tier reveal.
+    function fulfillTierReveal(uint256 requestId, bytes memory cleartexts, bytes memory decryptionProof) external {
+        bytes32 handle = tierRequestHandle[requestId];
+        require(handle != bytes32(0), "CipherTrust: unknown request");
+        bytes32[] memory handles = new bytes32[](1);
+        handles[0] = handle;
+        FHE.checkSignatures(handles, cleartexts, decryptionProof);
+
+        uint64 tierCode = abi.decode(cleartexts, (uint64));
+        uint256 agentId = tierRequestAgent[requestId];
+        delete tierRequestHandle[requestId];
+        delete tierRequestAgent[requestId];
+
+        if (address(reputationBadge) != address(0)) {
+            reputationBadge.mintOrUpgrade(agentId, _agents[agentId].operator, uint8(tierCode));
+        }
+        emit TierRevealed(agentId, tierCode);
+    }
+
+    /// @notice An authorized oracle flags a possible SLA breach with an
+    /// encrypted 0/1 signal. Nothing happens on-chain until the flag is
+    /// confidentially checked and revealed via fulfillSlashCheck.
+    function requestSlashCheck(
+        uint256 agentId,
+        externalEuint64 breachSignal,
+        bytes calldata inputProof
+    ) external onlyOracle returns (uint256 requestId) {
+        Agent storage a = _agents[agentId];
+        require(a.registered, "CipherTrust: unknown agent");
+
+        euint64 signal = FHE.fromExternal(breachSignal, inputProof);
+        ebool breached = FHE.eq(signal, FHE.asEuint64(1));
+        FHE.allowThis(breached);
+        FHE.makePubliclyDecryptable(breached);
+
+        requestId = nextSlashRequestId++;
+        slashRequestAgent[requestId] = agentId;
+        slashRequestHandle[requestId] = ebool.unwrap(breached);
+        emit SlashCheckRequested(agentId, requestId);
+    }
+
+    /// @notice Finalizes a slash check using the Zama KMS's decrypted
+    /// cleartext + proof. If breached, 10% of the posted bond is slashed and
+    /// forwarded to the InsurancePool (if configured) as LP yield.
+    function fulfillSlashCheck(uint256 requestId, bytes memory cleartexts, bytes memory decryptionProof) external {
+        bytes32 handle = slashRequestHandle[requestId];
+        require(handle != bytes32(0), "CipherTrust: unknown request");
+        bytes32[] memory handles = new bytes32[](1);
+        handles[0] = handle;
+        FHE.checkSignatures(handles, cleartexts, decryptionProof);
+
+        bool breached = abi.decode(cleartexts, (bool));
+        uint256 agentId = slashRequestAgent[requestId];
+        delete slashRequestHandle[requestId];
+        delete slashRequestAgent[requestId];
+
+        if (breached) {
+            Agent storage a = _agents[agentId];
+            uint256 penalty = (a.postedBond * SLASH_BPS) / 10000;
+            if (penalty > 0) {
+                a.postedBond -= penalty;
+                a.breachCount += 1;
+                a.bondSufficient = FHE.ge(FHE.asEuint64(uint64(_clampToU64(a.postedBond))), a.requiredBond);
+                FHE.allowThis(a.bondSufficient);
+                FHE.allow(a.bondSufficient, a.operator);
+
+                if (address(insurancePool) != address(0)) {
+                    insurancePool.receivePenalty{value: penalty}(agentId);
+                }
+                emit AgentSlashed(agentId, penalty);
+            }
+        }
+        emit SlashCheckFulfilled(agentId, breached);
+    }
+
     function getAgent(uint256 agentId)
         external
         view
-        returns (address operator, bool registered, bool active, uint256 postedBond)
+        returns (address operator, bool registered, bool active, uint256 postedBond, uint256 breachCount, uint256 identityId)
     {
         Agent storage a = _agents[agentId];
-        return (a.operator, a.registered, a.active, a.postedBond);
+        return (a.operator, a.registered, a.active, a.postedBond, a.breachCount, a.identityId);
     }
 
     function getEncryptedTrustScore(uint256 agentId) external view returns (euint64) {
