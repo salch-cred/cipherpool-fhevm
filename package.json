@@ -1,6 +1,6 @@
 {
   "name": "cipherpool-fhevm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CipherTrust: confidential underwriting protocol for autonomous agents & robots, built on Zama's fhEVM.",
   "license": "MIT",
   "scripts": {
@@ -18,6 +18,7 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
     "ethers": "^6.13.0"
   }
 }
