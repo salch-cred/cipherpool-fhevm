@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight02Icon, CheckmarkBadge03Icon } from "@hugeicons/core-free-icons";
 
-const BADGES = ["Zama fhEVM", "Sepolia testnet", "ERC-8004-inspired identity", "Soulbound reputation"];
+const BADGES = ["Confidential fhEVM", "Sepolia testnet", "ERC-8004-inspired identity", "Soulbound reputation"];
 
 export default function Hero() {
   return (
@@ -17,7 +17,7 @@ export default function Hero() {
           className="eyebrow card mx-auto mb-6 inline-flex items-center rounded-full px-4 py-1.5 text-gray-600"
         >
           <HugeiconsIcon icon={CheckmarkBadge03Icon} size={13} className="text-primary" />
-          Built for the Zama Developer Program — Mainnet Season 3
+          Decentralized Risk Engine & Security Vault
         </motion.div>
 
         <motion.h1

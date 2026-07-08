@@ -14,7 +14,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "CipherTrust — Confidential Underwriting for Autonomous Agents & Robots",
   description:
-    "CipherTrust prices collateral and insurance for autonomous AI agents and robots entirely under Fully Homomorphic Encryption, built on Zama's fhEVM for the Zama Developer Program Season 3.",
+    "CipherTrust prices collateral and insurance for autonomous AI agents and robots entirely under Fully Homomorphic Encryption, built on secure fhEVM consensus pipelines.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

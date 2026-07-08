@@ -11,7 +11,7 @@ export default function Footer() {
         <HugeiconsIcon icon={Github01Icon} size={14} />
         salch-cred/cipherpool-fhevm
       </a>
-      <p>CipherTrust — built for the Zama Developer Program, Mainnet Season 3. MIT licensed.</p>
+      <p>CipherTrust — Confidential risk underwriting engine for autonomous agents. MIT licensed.</p>
     </footer>
   );
 }

@@ -34,10 +34,10 @@ export default function CTA() {
             />
           </a>
           <a
-            href="https://www.zama.org/post/zama-developer-program-mainnet-season-3-composable-privacy-is-the-key"
+            href="https://github.com/zama-ai/fhevm"
             className="btn-secondary rounded-lg px-6 py-3 text-sm"
           >
-            Zama Season 3 details
+            fhEVM Technology
           </a>
         </div>
       </motion.div>
