@@ -20,6 +20,8 @@ contract InsurancePool {
     event Withdrawn(address indexed provider, uint256 amount, uint256 shares);
     event PenaltyReceived(uint256 indexed agentId, uint256 amount);
     event CipherTrustSet(address indexed cipherTrust);
+    event CreditDelegated(uint256 indexed agentId, uint256 amount);
+    event CreditRepaid(uint256 indexed agentId, uint256 amount);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "InsurancePool: not admin");
@@ -71,5 +73,17 @@ contract InsurancePool {
     function pricePerShare() external view returns (uint256) {
         if (totalShares == 0) return 1e18;
         return (totalAssets * 1e18) / totalShares;
+    }
+
+    function delegateCredit(uint256 agentId, uint256 amount) external onlyCipherTrust {
+        require(totalAssets >= amount, "InsurancePool: insufficient assets for credit delegation");
+        totalAssets -= amount;
+        payable(cipherTrust).transfer(amount);
+        emit CreditDelegated(agentId, amount);
+    }
+
+    function repayCredit(uint256 agentId) external payable onlyCipherTrust {
+        totalAssets += msg.value;
+        emit CreditRepaid(agentId, msg.value);
     }
 }

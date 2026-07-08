@@ -7,10 +7,10 @@ export default function Navbar() {
           CipherTrust
         </a>
         <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-          <a href="#features" className="hover:text-white">Features</a>
-          <a href="#how-it-works" className="hover:text-white">How it works</a>
-          <a href="#architecture" className="hover:text-white">Architecture</a>
-          <a href="#comparison" className="hover:text-white">Why it's different</a>
+          <a href="/#features" className="hover:text-white">Features</a>
+          <a href="/#how-it-works" className="hover:text-white">How it works</a>
+          <a href="/#architecture" className="hover:text-white">Architecture</a>
+          <a href="/dashboard" className="text-cyan-400 hover:text-white font-semibold">Interactive DApp</a>
         </nav>
         <a
           href="https://github.com/salch-cred/cipherpool-fhevm"

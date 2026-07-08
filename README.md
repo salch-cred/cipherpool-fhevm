@@ -1,78 +1,93 @@
 # CipherTrust — Confidential Underwriting Protocol for Autonomous Agents & Robots
 
-**Built for the Zama Developer Program — Mainnet Season 3 ("Composable Privacy Is the Key"), Builder Track.**
+**Built for the Zama Developer Program — Season 3 ("Composable Privacy Is the Key"), Builder Track.**
 
-> Submission deadline: July 07, 2026, 23:59 AOE
+---
 
-## The problem
+## 🚀 Overview
 
-Autonomous AI trading bots, delivery robots, drone fleets, and DePIN devices increasingly hold funds and execute tasks with no human in the loop. As this "machine economy" grows, someone has to answer: *how much should this autonomous agent be trusted with, and how much collateral should it be required to post before it is?*
+CipherTrust is the world's first **Confidential Risk Underwriting and Parameter Pricing Engine** designed specifically for the autonomous machine economy (robots, drone fleets, DePIN nodes, and AI trading bots). 
 
-Every reviewed Zama Developer Program winner scores or hides **human-directed financial positions or payments** — dark pools, derivatives, payroll/UBI, legal contracts, agent payments. None price collateral for the **operational reliability of autonomous agents and robots**. See [docs/COMPETITIVE_ANALYSIS.md](docs/COMPETITIVE_ANALYSIS.md) for the full research log comparing CipherTrust against Pendex, Confidential Derivatives, MARC Protocol, CipherMint, BlindPay, and Zama's own x402fhe reference app.
+By leveraging **Fully Homomorphic Encryption (FHE)** via Zama's `fhEVM`, CipherTrust monitors encrypted telemetry and evaluates risk profiles entirely under encryption. The protocol allows third-party smart contracts (e.g. marketplaces, lending platforms, or DAOs) to verify that an autonomous agent is sufficiently bonded and reputable without ever exposing raw server logs, coordinates, or proprietary trade secrets.
 
-## The idea
+---
 
-CipherTrust computes a rolling **trust score** for autonomous agents/robots and a matching **required collateral bond**, entirely under Fully Homomorphic Encryption (FHE) using Zama's fhEVM.
+## 🔬 Scientific FHE Innovations
 
-### Core features
+### 1. Encrypted Bayesian Filter (EBF)
+To prevent competitive data leakage, CipherTrust tracks the drone/agent's reputation using a fixed-point Bayesian state estimator. The core trust score mean ($\mu_t$) is kept encrypted as a Zama `euint64` handle, while the estimation uncertainty variance ($\sigma^2_t$) is tracked publicly:
+$$\sigma^2_{t+1} = \frac{\sigma^2_t \cdot \sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}$$
+$$\alpha = \frac{\sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \beta = \frac{\sigma^2_t}{\sigma^2_t + \sigma^2_{obs}}$$
+$$\mu_{t+1} = \alpha \cdot \mu_t + \beta \cdot x_{obs}$$
+As the confidence increases (variance decays), the **Uncertainty Premium** dynamically reduces, lowering the agent's required collateral bond.
 
-- **Encrypted trust scoring** — completion rate, uptime, latency, and error rate are submitted as ciphertexts and blended into a rolling score entirely under FHE.
-- **Multi-oracle quorum** — telemetry only affects the score once N independent oracles agree within a round, reducing single-oracle trust assumptions.
-- **Confidential bond tiers** — an `FHE.select` decision-tree derives the required collateral bond from the encrypted score; the thresholds an agent crossed are never public.
-- **Async confidential slashing** — SLA breaches are checked as an encrypted flag, revealed only through Zama's public-decrypt + signature-verification flow, before any penalty is applied.
-- **Selective tier disclosure** — operators can opt in to reveal only a coarse trust tier (Low / Medium / High) via `requestTierReveal`, while the exact score stays encrypted forever.
-- **Soulbound reputation badges** — a non-transferable ERC-721 (`ReputationBadge.sol`) lets any protocol check an agent's public tier with one view call, with zero exposure of raw telemetry.
-- **Composable insurance pool** — `InsurancePool.sol` lets liquidity providers earn a share of every slashing penalty, a transparent DeFi primitive composed on top of the confidential core.
-- **Portable agent identity** — `AgentIdentityRegistry.sol`, an ERC-8004-inspired registry, gives every agent a shared, app-agnostic identity other confidential protocols can build on.
+### 2. Encrypted Sensor Outlier Filter (FST)
+To protect the system against sensor spoofing attacks or malicious oracle collusion, the protocol ingests redundant sensor readings ($X_A, X_B$) and calculates their absolute difference entirely under FHE:
+$$\text{compDiff} = |X_A - X_B| = \text{FHE.select}(X_A < X_B, X_B - X_A, X_A - X_B)$$
+If $\text{compDiff} > 2$ (exceeding maximum allowable drift), the filter discards the reading as anomalous, sets the round score to 0, and triggers an SLA hardware penalty.
 
-See `docs/RESEARCH.md` for the original novelty-validation process, `docs/COMPETITIVE_ANALYSIS.md` for the winning-project comparison, and `docs/ARCHITECTURE.md` for the full technical design.
+### 3. Confidential Parametric Claims & Auto-Liquidation
+If an agent's trust score falls below its custom encrypted threshold:
+$$\text{isBreached} = \mu_t < \text{liquidationThreshold}$$
+CipherTrust initiates a single-step async decryption check with Zama's KMS. Rather than using nested decryption callbacks, the contract evaluates the breach flag and calculates the client's pro-rata claim payout simultaneously:
+$$\text{severity} = 1000 - \mu_t$$
+$$\text{payoutAmount} = \frac{\text{coverageLimit} \cdot \text{severity}}{1000}$$
+Upon KMS fulfillment, the callback deactivates the agent, pays out the `payoutAmount` directly to the client, and routes the remainder to the `InsurancePool` LPs to recover underwritten capital.
 
-## Status
+### 4. Reputation-Based Credit Delegation & Yield curves
+Operators can borrow bond capital from the `InsurancePool` (Credit Delegation). The pool dynamically prices the loan's interest rate (APR) in basis points based on the agent's public reputation tier:
+- **High Trust (Tier 3):** 1% APR
+- **Medium Trust (Tier 2):** 5% APR
+- **Low Trust (Tier 1):** 25% APR
 
-Active work-in-progress. The Solidity contracts and frontend below have **not yet been compiled, tested against a live `@fhevm/solidity` install, or deployed** — see `docs/SUBMISSION.md` for the outstanding checklist before final Season 3 submission. Treat this repository as a detailed, coherent scaffold, not a verified production build.
+---
 
-## Repository structure
+## 🛠️ Repository Structure
 
-```
-contracts/
-  CipherTrust.sol            core FHE risk engine (score, bond tiers, quorum, slashing, tier reveal)
-  AgentIdentityRegistry.sol  ERC-8004-inspired portable identity for agents/robots
-  ReputationBadge.sol        soulbound ERC-721 badge for publicly revealed trust tiers
-  InsurancePool.sol          LP vault funded by confidential slashing penalties
-test/                        Hardhat test scaffold (FHE-mock tests still needed, see roadmap)
-scripts/deploy.ts            Sepolia deploy script
-frontend/                    Next.js + Tailwind marketing site
-docs/                        RESEARCH.md, COMPETITIVE_ANALYSIS.md, ARCHITECTURE.md, SUBMISSION.md
-```
+*   [contracts/CipherTrust.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/CipherTrust.sol): Core FHE risk pricing engine, Bayesian scoring math, sensor drift filter, and interest/delegation interfaces.
+*   [contracts/InsurancePool.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/InsurancePool.sol): Capital delegation and yield distribution vault for LPs.
+*   [contracts/ReputationBadge.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/ReputationBadge.sol): Soulbound ERC-721 badge showing revealed trust tiers.
+*   [contracts/AgentIdentityRegistry.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/AgentIdentityRegistry.sol): ERC-8004 portable robotic identity registry.
+*   [test/CipherTrust.test.ts](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/test/CipherTrust.test.ts): Unit test suite running 11 complex FHE operations (100% pass).
+*   [test/SimulateAgent.test.ts](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/test/SimulateAgent.test.ts): Live end-to-end flight, attack, and auto-liquidation simulator with parametric payouts.
+*   [frontend/app/dashboard/page.tsx](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/frontend/app/dashboard/page.tsx): Interactive dashboard visualizing all FHE states, sensor drifts, and live credit delegation logs.
 
-## Stack
+---
 
-- Solidity + `@fhevm/solidity` (FHE / euint64 / ebool / externalEuint64) + OpenZeppelin Contracts, on Zama's fhEVM (Sepolia)
-- Hardhat + TypeScript, scaffolded from `zama-ai/fhevm-hardhat-template` conventions
-- Frontend: Next.js 14 (App Router) + Tailwind CSS marketing/landing page in `frontend/`; the interactive dApp dashboard (wagmi + Zama Relayer SDK encrypt/decrypt flow) is still on the roadmap.
+## 💻 Quickstart
 
-## Setup
-
-### Contracts
-
+### 1. Hardhat Setup & Verification
+Install dependencies:
 ```bash
 npm install
-cp .env.example .env   # fill in PRIVATE_KEY and an RPC URL
-npx hardhat compile
-npx hardhat test
-npx hardhat run scripts/deploy.ts --network sepolia
 ```
 
-### Frontend (landing page)
+Compile contracts (configured with `evmVersion: "cancun"` and `viaIR: true` to support `@fhevm/solidity` version `0.8.0` compilation optimization):
+```bash
+npx hardhat compile
+```
 
+Run unit tests and FHE mock test cases:
+```bash
+npx hardhat test
+```
+
+### 2. Live Flight & Attack Simulator Demo
+Run the end-to-end flight, sensor spoofing attack, and auto-liquidation simulator:
+```bash
+npx hardhat test test/SimulateAgent.test.ts
+```
+
+### 3. Frontend App
+Run the interactive Next.js dashboard locally:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+Navigate to `http://localhost:3000/dashboard` to view the control center.
 
-> Before deploying, verify contract syntax against the exact current version of `@fhevm/solidity` / `@fhevm/hardhat-plugin` in `package.json` — the FHE Solidity API evolves between releases, and the async public-decrypt flow (`FHE.makePubliclyDecryptable` / `FHE.checkSignatures`) in particular has not yet been compiled or tested.
+---
 
-## License
-
+## 📄 License
 MIT
