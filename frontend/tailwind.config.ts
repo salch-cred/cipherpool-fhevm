@@ -9,11 +9,11 @@ const config: Config = {
         surface: "rgba(255, 255, 255, 0.45)",
         border: "#E9E5D9",
         primary: {
-          DEFAULT: "#1A6FD1",
-          dark: "#14559F",
-          light: "#FDFBEB",
+          DEFAULT: "#D9A711",
+          dark: "#B08200",
+          light: "#FFFDF0",
         },
-        accent: "#2688DD",
+        accent: "#F1C40F",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
