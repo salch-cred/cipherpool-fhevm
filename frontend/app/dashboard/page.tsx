@@ -1,27 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  Shield, 
-  Cpu, 
-  Activity, 
-  Lock, 
-  Key, 
-  Coins, 
-  Terminal, 
-  UserCheck, 
-  ArrowUpRight, 
-  CheckCircle2, 
-  AlertTriangle,
-  RefreshCw,
-  TrendingUp,
-  FileCode,
-  Gauge,
-  Skull,
-  Radio,
-  ArrowDownLeft,
-  Percent
-} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  Shield01Icon,
+  CpuIcon,
+  Activity01Icon,
+  LockIcon,
+  TerminalIcon,
+  CheckmarkCircle02Icon,
+  Alert02Icon,
+  SkullIcon,
+  ArrowDownLeft01Icon,
+  PercentIcon,
+} from "@hugeicons/core-free-icons";
 
 export default function Dashboard() {
   const [role, setRole] = useState<"operator" | "oracle" | "underwriter" | "admin">("operator");
@@ -655,7 +648,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl px-6 py-12 text-gray-900">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="mx-auto min-h-screen max-w-6xl px-6 py-12 text-gray-900"
+    >
       {/* Header */}
       <div className="mb-8 flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 md:flex-row md:items-center">
         <div>
@@ -674,17 +672,22 @@ export default function Dashboard() {
         </div>
         
         {/* Role Selector */}
-        <div className="flex rounded-lg bg-white p-1 border border-gray-200">
+        <div className="relative flex rounded-lg bg-white p-1 border border-gray-200">
           {(["operator", "oracle", "underwriter"] as const).map((r) => (
             <button
               key={r}
               onClick={() => setRole(r)}
-              className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wider transition ${
-                role === r 
-                  ? "bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.4)]" 
-                  : "text-gray-600 hover:text-gray-900"
+              className={`relative z-10 rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                role === r ? "text-black" : "text-gray-600 hover:text-gray-900"
               }`}
             >
+              {role === r && (
+                <motion.span
+                  layoutId="roleTabIndicator"
+                  className="absolute inset-0 -z-10 rounded-md bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                />
+              )}
               {r}
             </button>
           ))}
@@ -700,7 +703,7 @@ export default function Dashboard() {
             <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur space-y-6">
               <div className="flex items-center gap-3">
                 <div className="rounded-lg bg-cyan-500/10 p-2 text-cyan-600">
-                  <Cpu className="h-5 w-5" />
+                  <HugeiconsIcon icon={CpuIcon} className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Operator Dashboard</h2>
               </div>
@@ -719,7 +722,7 @@ export default function Dashboard() {
                 </div>
               ) : !agentActive ? (
                 <div className="text-center py-8 border border-rose-500/20 bg-rose-500/5 rounded-lg">
-                  <Skull className="h-10 w-10 text-rose-600 mx-auto mb-2 animate-bounce" />
+                  <HugeiconsIcon icon={SkullIcon} className="h-10 w-10 text-rose-600 mx-auto mb-2 animate-bounce" />
                   <h3 className="text-lg font-bold text-rose-600">Agent Liquidated & Deactivated</h3>
                   <p className="text-xs text-gray-600 mt-1 max-w-sm mx-auto">
                     The FHE Trust Score dropped below the liquidation threshold (300). Posted bond has been fully slashed and operations are halted.
@@ -789,7 +792,7 @@ export default function Dashboard() {
                         onClick={handleRequestCredit}
                         className="mt-5 rounded bg-indigo-500 px-6 py-2 text-sm font-bold text-gray-900 hover:opacity-90 transition flex items-center gap-1.5"
                       >
-                        <ArrowDownLeft className="h-4 w-4" />
+                        <HugeiconsIcon icon={ArrowDownLeft01Icon} className="h-4 w-4" />
                         Borrow Bond
                       </button>
                     </div>
@@ -1508,7 +1511,7 @@ export default function Dashboard() {
             <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur">
               <div className="mb-4 flex items-center gap-3">
                 <div className="rounded-lg bg-indigo-500/10 p-2 text-indigo-600">
-                  <Activity className="h-5 w-5" />
+                  <HugeiconsIcon icon={Activity01Icon} className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Redundant Sensor Telemetry</h2>
               </div>
@@ -1617,7 +1620,7 @@ export default function Dashboard() {
                     onClick={handleOracleSubmit}
                     className="w-full rounded bg-cyan-500 py-2.5 text-sm font-bold text-black hover:opacity-90 transition flex items-center justify-center gap-2"
                   >
-                    <Lock className="h-4 w-4" />
+                    <HugeiconsIcon icon={LockIcon} className="h-4 w-4" />
                     Encrypt & Submit Telemetry
                   </button>
 
@@ -1641,7 +1644,7 @@ export default function Dashboard() {
             <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur">
               <div className="mb-4 flex items-center gap-3">
                 <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-600">
-                  <Shield className="h-5 w-5" />
+                  <HugeiconsIcon icon={Shield01Icon} className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Confidential Risk Underwriting</h2>
               </div>
@@ -1692,7 +1695,7 @@ export default function Dashboard() {
                     <div className="rounded bg-white p-4 border border-gray-200 col-span-2">
                       <div className="text-[10px] text-gray-400 uppercase mb-1">FHE Yield Curve Calibration (APR)</div>
                       <div className="flex items-center gap-2 mt-2 text-xs text-cyan-600">
-                        <Percent className="h-4 w-4 text-emerald-600" />
+                        <HugeiconsIcon icon={PercentIcon} className="h-4 w-4 text-emerald-600" />
                         <span>High Trust: 1% APR | Med Trust: 5% APR | Low Trust: 25% APR (Confidential)</span>
                       </div>
                     </div>
@@ -1802,7 +1805,7 @@ export default function Dashboard() {
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 font-mono text-xs">
             <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
               <div className="flex items-center gap-2">
-                <Terminal className="h-4 w-4 text-cyan-600" />
+                <HugeiconsIcon icon={TerminalIcon} className="h-4 w-4 text-cyan-600" />
                 <span className="font-bold text-gray-800">Bayesian Telemetry Logs</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -1880,11 +1883,11 @@ export default function Dashboard() {
                 {decryptedSufficiency !== null ? (
                   decryptedSufficiency ? (
                     <span className="flex items-center gap-1 text-xs text-emerald-600 font-semibold">
-                      <CheckCircle2 className="h-4 w-4" /> Sufficient
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" /> Sufficient
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-xs text-rose-600 font-semibold">
-                      <AlertTriangle className="h-4 w-4" /> Insufficient
+                      <HugeiconsIcon icon={Alert02Icon} className="h-4 w-4" /> Insufficient
                     </span>
                   )
                 ) : (
@@ -1906,7 +1909,7 @@ export default function Dashboard() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="flex justify-between items-start">
-                  <Shield className="h-8 w-8 text-cyan-600" />
+                  <HugeiconsIcon icon={Shield01Icon} className="h-8 w-8 text-cyan-600" />
                   <span className="text-[10px] font-mono text-gray-400">CTRUST #000</span>
                 </div>
                 
@@ -1919,12 +1922,12 @@ export default function Dashboard() {
 
                 <div className="text-left mt-2 border-t border-gray-200 pt-2 flex justify-between items-center text-[10px] text-gray-400">
                   <span>Soulbound NFT</span>
-                  <CheckCircle2 className="h-3 w-3 text-cyan-600" />
+                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3 w-3 text-cyan-600" />
                 </div>
               </div>
             ) : (
               <div className="w-full max-w-[200px] aspect-square rounded-2xl border border-gray-200 bg-white p-6 flex flex-col items-center justify-center text-gray-300">
-                <Lock className="h-10 w-10 mb-2" />
+                <HugeiconsIcon icon={LockIcon} className="h-10 w-10 mb-2" />
                 <span className="text-xs">Badge Locked</span>
               </div>
             )}
@@ -1935,6 +1938,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
