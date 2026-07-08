@@ -11,7 +11,7 @@ async function main() {
   }
 
   console.log("======================================================================");
-  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL || "http://localhost:8545");
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL || process.env.SEPOLIA_RPC_URL || "http://localhost:8545");
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
   console.log(`Starting CipherTrust Telemetry Oracle Daemon: ${wallet.address}`);
   console.log(`Target Protocol Contract Address: ${cipherTrustAddress}`);
