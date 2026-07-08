@@ -9,7 +9,6 @@ const LINKS = [
   { href: "/#features", label: "Features" },
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#architecture", label: "Architecture" },
-  { href: "/#comparison", label: "Research" },
 ];
 
 export default function Navbar() {
