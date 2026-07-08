@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist"
   },
-  "include": ["./scripts/**/*", "./test/**/*", "./hardhat.config.ts"],
+  "include": ["./scripts/oracle_service.ts"],
   "exclude": ["node_modules"]
 }
