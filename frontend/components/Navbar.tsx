@@ -19,9 +19,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <a href="/" className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-gray-900">
-          <span className="flex h-7 w-7 items-center justify-center bg-primary text-[11px] font-bold text-white">
-            CT
-          </span>
+          <img src="/logo.jpg" alt="CipherTrust Logo" className="h-7 w-7 rounded-lg object-cover border border-border" />
           CipherTrust
         </a>
 
