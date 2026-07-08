@@ -1,7 +1,17 @@
 import { ethers } from "hardhat";
 import * as dotenv from "dotenv";
+import * as http from "http";
 
 dotenv.config();
+
+// HF Spaces compatibility: Respond to health check pings on port 7860
+const port = process.env.PORT || 7860;
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("CipherTrust Oracle Daemon is Running!\n");
+}).listen(port, () => {
+  console.log(`HF Health Check Server listening on port ${port}`);
+});
 
 async function main() {
   const cipherTrustAddress = process.env.CIPHERTRUST_ADDRESS;
