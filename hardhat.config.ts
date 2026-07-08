@@ -12,7 +12,16 @@ const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.24",
     settings: {
-      optimizer: { enabled: true, runs: 1 },
+      optimizer: {
+        enabled: true,
+        runs: 1,
+        details: {
+          yul: true,
+          yulDetails: {
+            stackAllocation: true
+          }
+        }
+      },
       evmVersion: "cancun",
       viaIR: true,
     },
@@ -25,6 +34,11 @@ const config: HardhatUserConfig = {
       url: SEPOLIA_RPC_URL,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
       chainId: 11155111,
+    },
+    baseSepolia: {
+      url: "https://sepolia.base.org",
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+      chainId: 84532,
     },
   },
 };
