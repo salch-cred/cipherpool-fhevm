@@ -655,26 +655,26 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-6xl px-6 py-12 text-white">
+    <div className="mx-auto min-h-screen max-w-6xl px-6 py-12 text-gray-900">
       {/* Header */}
-      <div className="mb-8 flex flex-col justify-between gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center">
+      <div className="mb-8 flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 md:flex-row md:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded bg-indigo-500/10 px-2 py-1 text-xs font-semibold text-indigo-400 border border-indigo-500/30">
+            <span className="rounded bg-indigo-500/10 px-2 py-1 text-xs font-semibold text-indigo-600 border border-indigo-500/30">
               World First
             </span>
-            <span className="text-white/40 text-xs">Reputation-Based FHE Credit Delegation</span>
+            <span className="text-gray-400 text-xs">Reputation-Based FHE Credit Delegation</span>
           </div>
-          <h1 className="bg-gradient-to-r from-cyan-400 via-teal-400 to-indigo-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent mt-1">
+          <h1 className="bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent mt-1">
             CipherTrust Underwriting Control Center
           </h1>
-          <p className="mt-1 text-sm text-white/50">
+          <p className="mt-1 text-sm text-gray-500">
             Confidential credit underwriting, sensor anomaly filtering, and FHE interest rate curves.
           </p>
         </div>
         
         {/* Role Selector */}
-        <div className="flex rounded-lg bg-white/5 p-1 border border-white/10">
+        <div className="flex rounded-lg bg-white p-1 border border-gray-200">
           {(["operator", "oracle", "underwriter"] as const).map((r) => (
             <button
               key={r}
@@ -682,7 +682,7 @@ export default function Dashboard() {
               className={`rounded-md px-4 py-2 text-xs font-semibold uppercase tracking-wider transition ${
                 role === r 
                   ? "bg-cyan-500 text-black shadow-[0_0_15px_rgba(6,182,212,0.4)]" 
-                  : "text-white/60 hover:text-white"
+                  : "text-gray-600 hover:text-gray-900"
               }`}
             >
               {r}
@@ -697,9 +697,9 @@ export default function Dashboard() {
         <div className="space-y-6 lg:col-span-7">
           {/* Operator Action card */}
           {role === "operator" && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur space-y-6">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur space-y-6">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-cyan-500/10 p-2 text-cyan-400">
+                <div className="rounded-lg bg-cyan-500/10 p-2 text-cyan-600">
                   <Cpu className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Operator Dashboard</h2>
@@ -707,26 +707,26 @@ export default function Dashboard() {
 
               {!agentRegistered ? (
                 <div className="text-center py-8">
-                  <p className="mb-4 text-sm text-white/60">
+                  <p className="mb-4 text-sm text-gray-600">
                     Register this autonomous agent to begin encrypted underwriting.
                   </p>
                   <button
                     onClick={handleRegisterAgent}
-                    className="rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 px-6 py-2.5 text-sm font-semibold text-black transition hover:opacity-90 animate-pulse"
+                    className="rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 px-6 py-2.5 text-sm font-semibold text-black transition hover:opacity-90 animate-pulse"
                   >
                     Register Agent #0
                   </button>
                 </div>
               ) : !agentActive ? (
                 <div className="text-center py-8 border border-rose-500/20 bg-rose-500/5 rounded-lg">
-                  <Skull className="h-10 w-10 text-rose-500 mx-auto mb-2 animate-bounce" />
-                  <h3 className="text-lg font-bold text-rose-400">Agent Liquidated & Deactivated</h3>
-                  <p className="text-xs text-white/60 mt-1 max-w-sm mx-auto">
+                  <Skull className="h-10 w-10 text-rose-600 mx-auto mb-2 animate-bounce" />
+                  <h3 className="text-lg font-bold text-rose-600">Agent Liquidated & Deactivated</h3>
+                  <p className="text-xs text-gray-600 mt-1 max-w-sm mx-auto">
                     The FHE Trust Score dropped below the liquidation threshold (300). Posted bond has been fully slashed and operations are halted.
                   </p>
                   <button
                     onClick={handleRegisterAgent}
-                    className="mt-4 rounded bg-white/10 hover:bg-white/20 px-4 py-2 text-xs font-bold transition text-white"
+                    className="mt-4 rounded bg-gray-50 hover:bg-gray-100 px-4 py-2 text-xs font-bold transition text-gray-900"
                   >
                     Re-register New Agent
                   </button>
@@ -734,20 +734,20 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-6">
                   {/* Collateral Deposit */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5">
-                    <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/40">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200">
+                    <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
                       Collateral Management (Self-Funded)
                     </h3>
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <label className="block text-[10px] uppercase text-white/40 mb-1">
+                        <label className="block text-[10px] uppercase text-gray-400 mb-1">
                           Deposit Amount (ETH)
                         </label>
                         <input
                           type="number"
                           value={depositAmount}
                           onChange={(e) => setDepositAmount(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
+                          className="w-full rounded bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-cyan-500"
                         />
                       </div>
                       <button
@@ -760,34 +760,34 @@ export default function Dashboard() {
                   </div>
 
                   {/* Credit Delegation */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200">
                     <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
                         Underwriting Credit Delegation (Lending)
                       </h3>
-                      <span className="text-[10px] text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-indigo-600 border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 rounded font-mono">
                         Available Pool: {poolStaked.toFixed(2)} ETH
                       </span>
                     </div>
-                    <p className="text-xs text-white/60 mb-4">
+                    <p className="text-xs text-gray-600 mb-4">
                       Borrow required bond capital directly from the Insurance Pool. Repay interest accrued under FHE.
                     </p>
 
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <label className="block text-[10px] uppercase text-white/40 mb-1">
+                        <label className="block text-[10px] uppercase text-gray-400 mb-1">
                           Borrow Amount (ETH)
                         </label>
                         <input
                           type="number"
                           value={borrowAmount}
                           onChange={(e) => setBorrowAmount(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
+                          className="w-full rounded bg-white border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-cyan-500"
                         />
                       </div>
                       <button
                         onClick={handleRequestCredit}
-                        className="mt-5 rounded bg-indigo-500 px-6 py-2 text-sm font-bold text-white hover:opacity-90 transition flex items-center gap-1.5"
+                        className="mt-5 rounded bg-indigo-500 px-6 py-2 text-sm font-bold text-gray-900 hover:opacity-90 transition flex items-center gap-1.5"
                       >
                         <ArrowDownLeft className="h-4 w-4" />
                         Borrow Bond
@@ -795,20 +795,20 @@ export default function Dashboard() {
                     </div>
 
                     {delegatedBond > 0 && (
-                      <div className="mt-4 grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
-                        <div className="rounded bg-white/2 p-3 border border-white/5">
-                          <span className="text-[10px] text-white/40 uppercase block mb-1">Delegated Bond</span>
-                          <span className="text-sm font-bold text-indigo-400">{delegatedBond} ETH</span>
+                      <div className="mt-4 grid grid-cols-2 gap-4 border-t border-gray-200 pt-4">
+                        <div className="rounded bg-white p-3 border border-gray-200">
+                          <span className="text-[10px] text-gray-400 uppercase block mb-1">Delegated Bond</span>
+                          <span className="text-sm font-bold text-indigo-600">{delegatedBond} ETH</span>
                         </div>
-                        <div className="rounded bg-white/2 p-3 border border-white/5 flex justify-between items-center">
+                        <div className="rounded bg-white p-3 border border-gray-200 flex justify-between items-center">
                           <div>
-                            <span className="text-[10px] text-white/40 uppercase block mb-1">Interest Owed (FHE)</span>
-                            <span className="text-sm font-bold text-rose-400">{interestAccumulated} ETH</span>
+                            <span className="text-[10px] text-gray-400 uppercase block mb-1">Interest Owed (FHE)</span>
+                            <span className="text-sm font-bold text-rose-600">{interestAccumulated} ETH</span>
                           </div>
                           {interestAccumulated > 0 && (
                             <button
                               onClick={handleRepayInterest}
-                              className="rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 px-3 py-1.5 text-xs font-bold hover:bg-rose-500/20 transition"
+                              className="rounded bg-rose-500/10 border border-rose-500/30 text-rose-600 px-3 py-1.5 text-xs font-bold hover:bg-rose-500/20 transition"
                             >
                               Repay
                             </button>
@@ -819,47 +819,47 @@ export default function Dashboard() {
                   </div>
 
                   {/* Task Underwriting */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
                       Confidential Parametric Task Underwriting
                     </h3>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Register a client's task. The robot's collateral bond (posted + delegated) will back this task's insurance coverage.
                     </p>
 
                     {activeTask && activeTask.active ? (
                       <div className="rounded bg-teal-500/10 border border-teal-500/20 p-3 flex justify-between items-center">
                         <div>
-                          <span className="text-[10px] text-teal-400 uppercase block font-semibold">Active Insured Task</span>
-                          <span className="text-xs text-white/80">Client: {activeTask.client}</span>
+                          <span className="text-[10px] text-teal-600 uppercase block font-semibold">Active Insured Task</span>
+                          <span className="text-xs text-gray-800">Client: {activeTask.client}</span>
                         </div>
-                        <span className="text-xs font-bold text-teal-400 font-mono">Coverage: {activeTask.limit} ETH</span>
+                        <span className="text-xs font-bold text-teal-600 font-mono">Coverage: {activeTask.limit} ETH</span>
                       </div>
                     ) : (
                       <div className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] uppercase text-white/40 mb-1">Client Address</label>
+                            <label className="block text-[10px] uppercase text-gray-400 mb-1">Client Address</label>
                             <input
                               type="text"
                               value={taskClient}
                               onChange={(e) => setTaskClient(e.target.value)}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] uppercase text-white/40 mb-1">Coverage Limit (ETH)</label>
+                            <label className="block text-[10px] uppercase text-gray-400 mb-1">Coverage Limit (ETH)</label>
                             <input
                               type="number"
                               value={taskLimit}
                               onChange={(e) => setTaskLimit(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500"
                             />
                           </div>
                         </div>
                         <button
                           onClick={handleRegisterTask}
-                          className="w-full rounded bg-gradient-to-r from-teal-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                          className="w-full rounded bg-gradient-to-r from-teal-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
                         >
                           Underwrite Task
                         </button>
@@ -868,11 +868,11 @@ export default function Dashboard() {
 
                     {payoutLog && (
                       <div className="rounded bg-rose-500/10 border border-rose-500/20 p-3 space-y-1">
-                        <div className="flex justify-between items-center text-rose-400 font-semibold text-xs">
+                        <div className="flex justify-between items-center text-rose-600 font-semibold text-xs">
                           <span>⚠️ PARAMETRIC CLAIM PAID</span>
                           <span>-{payoutLog.amount} ETH</span>
                         </div>
-                        <p className="text-[10px] text-white/60">
+                        <p className="text-[10px] text-gray-600">
                           Failure Severity: {payoutLog.severity}/1000. Coverage paid to Client: {payoutLog.amount} ETH. Remainder {payoutLog.remainder.toFixed(4)} ETH returned to LP pool.
                         </p>
                       </div>
@@ -880,16 +880,16 @@ export default function Dashboard() {
                   </div>
 
                   {/* Hardware Leasing */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         Zero-Deposit Hardware Leasing Portal
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Lessee: Operator
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Lease high-performance GPU or DePIN hardware nodes without posting collateral deposits, backed by your on-chain revealed reputation score.
                     </p>
 
@@ -897,10 +897,10 @@ export default function Dashboard() {
                       <div className="space-y-3">
                         <div className="rounded bg-indigo-500/10 border border-indigo-500/20 p-3 flex justify-between items-center">
                           <div>
-                            <span className="text-[10px] text-indigo-400 block font-semibold uppercase">ACTIVE UNDERWRITTEN LEASE</span>
-                            <span className="text-xs text-white/80 font-mono">Hardware ID: #{activeLease.hardwareId}</span>
+                            <span className="text-[10px] text-indigo-600 block font-semibold uppercase">ACTIVE UNDERWRITTEN LEASE</span>
+                            <span className="text-xs text-gray-800 font-mono">Hardware ID: #{activeLease.hardwareId}</span>
                           </div>
-                          <span className="text-xs font-bold text-indigo-400 font-mono">Delegated Bond: {activeLease.bond} ETH</span>
+                          <span className="text-xs font-bold text-indigo-600 font-mono">Delegated Bond: {activeLease.bond} ETH</span>
                         </div>
                         <div className="flex gap-2">
                           <button
@@ -911,7 +911,7 @@ export default function Dashboard() {
                           </button>
                           <button
                             onClick={() => handleSettleLease(false)}
-                            className="flex-1 rounded bg-rose-500 py-2 text-xs font-bold text-white hover:opacity-90 transition"
+                            className="flex-1 rounded bg-rose-500 py-2 text-xs font-bold text-gray-900 hover:opacity-90 transition"
                           >
                             Flag Damage/Theft (Slash)
                           </button>
@@ -921,27 +921,27 @@ export default function Dashboard() {
                       <div className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] uppercase text-white/40 mb-1">Hardware ID</label>
+                            <label className="block text-[10px] uppercase text-gray-400 mb-1">Hardware ID</label>
                             <input
                               type="number"
                               value={inputHardwareId}
                               onChange={(e) => setInputHardwareId(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] uppercase text-white/40 mb-1">Underwriting Bond (ETH)</label>
+                            <label className="block text-[10px] uppercase text-gray-400 mb-1">Underwriting Bond (ETH)</label>
                             <input
                               type="number"
                               value={inputLeaseBond}
                               onChange={(e) => setInputLeaseBond(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500"
                             />
                           </div>
                         </div>
                         <button
                           onClick={handleRequestLease}
-                          className="w-full rounded bg-gradient-to-r from-cyan-400 via-teal-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                          className="w-full rounded bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
                         >
                           Request Zero-Deposit Lease
                         </button>
@@ -951,14 +951,14 @@ export default function Dashboard() {
                     {leaseLog && (
                       <div className={`rounded p-3 space-y-1 text-xs font-semibold ${
                         leaseLog.success 
-                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
-                          : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600" 
+                          : "bg-rose-500/10 border border-rose-500/20 text-rose-600"
                       }`}>
                         <div className="flex justify-between items-center">
                           <span>{leaseLog.success ? "✅ LEASE COMPLETED" : "🚨 LEASE SLASHED"}</span>
                           <span>{leaseLog.success ? "Bond Repaid" : `-${leaseLog.payout} ETH`}</span>
                         </div>
-                        <p className="text-[10px] text-white/60 font-normal">
+                        <p className="text-[10px] text-gray-600 font-normal">
                           {leaseLog.success 
                             ? "Lease settled. Underwritten credit successfully returned to the pool." 
                             : `Hardware lease #${leaseLog.id} breached. Collateral bond paid to owner.`}
@@ -968,87 +968,87 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-MFA Biometrics Authentication */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-MFA: Confidential Biometric Gate
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Status: {biometricsRegistered ? "MFA Active" : "Unregistered"}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Lock your account operations behind homomorphic biometric distance checking (Manhattan Distance metric |X - X_f| + |Y - Y_f| + |Z - Z_f| &le; 15).
                     </p>
 
                     {!biometricsRegistered ? (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 1: Register Encrypted Biometric Embedding</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 1: Register Encrypted Biometric Embedding</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">X Axis</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">X Axis</label>
                             <input
                               type="number"
                               value={bioX}
                               onChange={(e) => setBioX(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Y Axis</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Y Axis</label>
                             <input
                               type="number"
                               value={bioY}
                               onChange={(e) => setBioY(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Z Axis</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Z Axis</label>
                             <input
                               type="number"
                               value={bioZ}
                               onChange={(e) => setBioZ(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                         </div>
                         <button
                           onClick={handleRegisterBiometrics}
-                          className="w-full rounded bg-gradient-to-r from-cyan-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                          className="w-full rounded bg-gradient-to-r from-cyan-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
                         >
                           Register Biometric Key (Encrypt & Store)
                         </button>
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 2: Authenticate with Fresh Biometrics</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 2: Authenticate with Fresh Biometrics</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">X Fresh</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">X Fresh</label>
                             <input
                               type="number"
                               value={authX}
                               onChange={(e) => setAuthX(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Y Fresh</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Y Fresh</label>
                             <input
                               type="number"
                               value={authY}
                               onChange={(e) => setAuthY(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Z Fresh</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Z Fresh</label>
                             <input
                               type="number"
                               value={authZ}
                               onChange={(e) => setAuthZ(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                         </div>
@@ -1063,11 +1063,11 @@ export default function Dashboard() {
                         {authVerified !== null && (
                           <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
                             authVerified 
-                              ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
-                              : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                              ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600" 
+                              : "bg-rose-500/10 border border-rose-500/20 text-rose-600"
                           }`}>
                             <span>{authVerified ? "🔓 ACCESS GRANTED" : "🔒 ACCESS DENIED"}</span>
-                            <span className="font-mono text-[10px] text-white/50">
+                            <span className="font-mono text-[10px] text-gray-500">
                               Drift: {Math.abs(bioX - authX) + Math.abs(bioY - authY) + Math.abs(bioZ - authZ)} / 15
                             </span>
                           </div>
@@ -1077,60 +1077,60 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-Shield: Confidential Spam Filtering */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-Shield: Confidential Spam Filter
                       </h3>
                       <div className="flex gap-2">
-                        <span className="text-[10px] text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 rounded font-mono">
+                        <span className="text-[10px] text-emerald-600 border border-emerald-500/20 bg-emerald-500/5 px-2 py-0.5 rounded font-mono">
                           Inbox: {msgInboxCount}
                         </span>
-                        <span className="text-[10px] text-rose-400 border border-rose-500/20 bg-rose-500/5 px-2 py-0.5 rounded font-mono">
+                        <span className="text-[10px] text-rose-600 border border-rose-500/20 bg-rose-500/5 px-2 py-0.5 rounded font-mono">
                           Spam: {msgSpamInboxCount}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Evaluate inbound message weights homomorphically without revealing their text content. Messages exceeding threshold are isolated into the spam folder.
                     </p>
 
                     <div className="space-y-3">
                       <div className="grid grid-cols-4 gap-2">
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">Threshold</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Threshold</label>
                           <input
                             type="number"
                             value={spamThresholdVal}
                             onChange={(e) => setSpamThresholdVal(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">W_A (Spam)</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">W_A (Spam)</label>
                           <input
                             type="number"
                             value={msgWeightA}
                             onChange={(e) => setMsgWeightA(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">W_B (Phish)</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">W_B (Phish)</label>
                           <input
                             type="number"
                             value={msgWeightB}
                             onChange={(e) => setMsgWeightB(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">W_C (Malware)</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">W_C (Malware)</label>
                           <input
                             type="number"
                             value={msgWeightC}
                             onChange={(e) => setMsgWeightC(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                       </div>
@@ -1138,7 +1138,7 @@ export default function Dashboard() {
                       <button
                         onClick={handleSendMsg}
                         disabled={isSendingMsg}
-                        className="w-full rounded bg-gradient-to-r from-cyan-400 via-teal-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                        className="w-full rounded bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
                       >
                         {isSendingMsg ? "Evaluating spam filters..." : "Send Confidential Message"}
                       </button>
@@ -1146,11 +1146,11 @@ export default function Dashboard() {
                       {lastMsgSpamStatus !== null && (
                         <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
                           lastMsgSpamStatus 
-                            ? "bg-rose-500/10 border border-rose-500/20 text-rose-400" 
-                            : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                            ? "bg-rose-500/10 border border-rose-500/20 text-rose-600" 
+                            : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600"
                         }`}>
                           <span>{lastMsgSpamStatus ? "🚨 MESSAGE BLOCKED (SPAM)" : "📩 MESSAGE DELIVERED (INBOX)"}</span>
-                          <span className="font-mono text-[10px] text-white/50">
+                          <span className="font-mono text-[10px] text-gray-500">
                             Sum: {msgWeightA + msgWeightB + msgWeightC} / {spamThresholdVal}
                           </span>
                         </div>
@@ -1159,16 +1159,16 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-Pass: Challenge-Response Authentication */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-Pass: Passwordless Auth Gate
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Vault: {secretRegistered ? "Secret Registered" : "Empty"}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Login securely without exposing your master secret key using dynamic challenge-response proofs (R = Secret + Challenge) computed under FHE.
                     </p>
 
@@ -1176,17 +1176,17 @@ export default function Dashboard() {
                       <div className="space-y-3">
                         <div className="flex gap-2 items-end">
                           <div className="flex-1">
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Master secret key</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Master secret key</label>
                             <input
                               type="number"
                               value={authSecretVal}
                               onChange={(e) => setAuthSecretVal(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <button
                             onClick={handleRegisterSecret}
-                            className="rounded bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-1.5 text-xs font-bold text-black hover:opacity-90 transition h-[32px]"
+                            className="rounded bg-gradient-to-r from-cyan-500 to-indigo-500 px-4 py-1.5 text-xs font-bold text-black hover:opacity-90 transition h-[32px]"
                           >
                             Register Key
                           </button>
@@ -1197,12 +1197,12 @@ export default function Dashboard() {
                         <div className="flex justify-between items-center">
                           <button
                             onClick={handleGenerateChallenge}
-                            className="rounded border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 px-3 py-1.5 text-[10px] font-bold transition"
+                            className="rounded border border-indigo-500/30 text-indigo-600 hover:bg-indigo-500/10 px-3 py-1.5 text-[10px] font-bold transition"
                           >
                             Generate Challenge Code
                           </button>
                           {authChallengeVal !== null && (
-                            <span className="text-xs font-mono text-cyan-400">
+                            <span className="text-xs font-mono text-cyan-600">
                               Active Challenge: {authChallengeVal}
                             </span>
                           )}
@@ -1211,12 +1211,12 @@ export default function Dashboard() {
                         {authChallengeVal !== null && (
                           <div className="space-y-3 pt-2">
                             <div>
-                              <label className="block text-[9px] text-white/40 uppercase mb-0.5">Your Response (Secret + Challenge)</label>
+                              <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Your Response (Secret + Challenge)</label>
                               <input
                                 type="number"
                                 value={authResponseVal}
                                 onChange={(e) => setAuthResponseVal(Number(e.target.value))}
-                                className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                                className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                               />
                             </div>
                             <button
@@ -1230,11 +1230,11 @@ export default function Dashboard() {
                             {authPassStatus !== null && (
                               <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
                                 authPassStatus 
-                                  ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
-                                  : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                                  ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600" 
+                                  : "bg-rose-500/10 border border-rose-500/20 text-rose-600"
                               }`}>
                                 <span>{authPassStatus ? "🔓 PASS-MFA AUTHENTICATED" : "🔒 ACCESS DENIED"}</span>
-                                <span className="font-mono text-[10px] text-white/50">
+                                <span className="font-mono text-[10px] text-gray-500">
                                   Expected: {authSecretVal + authChallengeVal}
                                 </span>
                               </div>
@@ -1246,46 +1246,46 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-Passport: Private Biometric Uniqueness Check */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-Passport: Biometric Uniqueness Check
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Count: {passportRegisteredCount}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Register a Sybil-resistant identity privately. The contract loops through the database of templates under FHE to verify that your biometric template is unique before granting a passport.
                     </p>
 
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">X Axis</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">X Axis</label>
                           <input
                             type="number"
                             value={passportX}
                             onChange={(e) => setPassportX(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">Y Axis</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Y Axis</label>
                           <input
                             type="number"
                             value={passportY}
                             onChange={(e) => setPassportY(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                         <div>
-                          <label className="block text-[9px] text-white/40 uppercase mb-0.5">Z Axis</label>
+                          <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Z Axis</label>
                           <input
                             type="number"
                             value={passportZ}
                             onChange={(e) => setPassportZ(Number(e.target.value))}
-                            className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                            className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                           />
                         </div>
                       </div>
@@ -1293,7 +1293,7 @@ export default function Dashboard() {
                       <button
                         onClick={handleRequestPassport}
                         disabled={isCheckingPassport}
-                        className="w-full rounded bg-gradient-to-r from-cyan-400 via-teal-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition font-bold"
+                        className="w-full rounded bg-gradient-to-r from-cyan-500 via-teal-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition font-bold"
                       >
                         {isCheckingPassport ? "Checking templates under FHE..." : "Register Biometric Passport"}
                       </button>
@@ -1301,11 +1301,11 @@ export default function Dashboard() {
                       {passportUniqueStatus !== null && (
                         <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
                           passportUniqueStatus 
-                            ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
-                            : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
+                            ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600" 
+                            : "bg-rose-500/10 border border-rose-500/20 text-rose-600"
                         }`}>
                           <span>{passportUniqueStatus ? "✅ PASSPORT REGISTERED (UNIQUE)" : "🚨 REGISTRATION REJECTED (DUPLICATE)"}</span>
-                          <span className="font-mono text-[10px] text-white/50">
+                          <span className="font-mono text-[10px] text-gray-500">
                             {passportUniqueStatus ? "Sybil Check Passed" : "Sybil Attack Blocked"}
                           </span>
                         </div>
@@ -1314,87 +1314,87 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-Aegis: AI Agent Behavior Drift Gate */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-Aegis: AI Agent Behavior Drift Detector
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Status: {hasBaseline ? "Baseline Set" : "Unmonitored"}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Monitor AI agent operations to prevent hijacked models or prompt drift. Calculates squared Euclidean distance against baseline metrics under FHE. Drift exceeding 1000 results in deactivation and slashing.
                     </p>
 
                     {!hasBaseline ? (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 1: Set Agent Behavioral Baseline</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 1: Set Agent Behavioral Baseline</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Base Tx Size</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Base Tx Size</label>
                             <input
                               type="number"
                               value={baseTxSize}
                               onChange={(e) => setBaseTxSize(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Base Freq</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Base Freq</label>
                             <input
                               type="number"
                               value={baseFreq}
                               onChange={(e) => setBaseFreq(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Base Confidence</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Base Confidence</label>
                             <input
                               type="number"
                               value={baseConfidence}
                               onChange={(e) => setBaseConfidence(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                         </div>
                         <button
                           onClick={handleRegisterBaseline}
-                          className="w-full rounded bg-gradient-to-r from-cyan-400 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                          className="w-full rounded bg-gradient-to-r from-cyan-500 to-indigo-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
                         >
                           Register Encrypted Behavior Baseline
                         </button>
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 2: Submit Telemetry for Behavioral Drift Verification</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 2: Submit Telemetry for Behavioral Drift Verification</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Current Tx Size</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Current Tx Size</label>
                             <input
                               type="number"
                               value={currentTxSize}
                               onChange={(e) => setCurrentTxSize(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Current Freq</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Current Freq</label>
                             <input
                               type="number"
                               value={currentFreq}
                               onChange={(e) => setCurrentFreq(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <div>
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Current Confidence</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Current Confidence</label>
                             <input
                               type="number"
                               value={currentConfidence}
                               onChange={(e) => setCurrentConfidence(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                         </div>
@@ -1410,11 +1410,11 @@ export default function Dashboard() {
                         {isCompromised !== null && (
                           <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
                             isCompromised 
-                              ? "bg-rose-500/10 border border-rose-500/20 text-rose-400 animate-pulse" 
-                              : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
+                              ? "bg-rose-500/10 border border-rose-500/20 text-rose-600 animate-pulse" 
+                              : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600"
                           }`}>
                             <span>{isCompromised ? "🚨 ROGUE DRIFT DETECTED - SLASHED" : "✅ AGENT BEHAVIOR NORMAL"}</span>
-                            <span className="font-mono text-[10px] text-white/50">
+                            <span className="font-mono text-[10px] text-gray-500">
                               Drift: {Math.pow(currentTxSize - baseTxSize, 2) + Math.pow(currentFreq - baseFreq, 2) + Math.pow(currentConfidence - baseConfidence, 2)} / 1000
                             </span>
                           </div>
@@ -1424,36 +1424,36 @@ export default function Dashboard() {
                   </div>
 
                   {/* FHE-Stream: Confidential Salary & Yield Streaming */}
-                  <div className="rounded-lg bg-white/5 p-4 border border-white/5 space-y-4">
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-400 font-bold">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
                         FHE-Stream: Confidential Staking & Payroll
                       </h3>
-                      <span className="text-[10px] text-white/40 border border-white/10 px-2 py-0.5 rounded font-mono">
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
                         Stream: {streamActive ? "Active" : "Inactive"}
                       </span>
                     </div>
-                    <p className="text-xs text-white/60">
+                    <p className="text-xs text-gray-600">
                       Distribute yields and streaming salaries confidentially. Flow rates (tokens per block) remain encrypted. Claim accrued balances privately using dynamic KMS decryptions.
                     </p>
 
                     {!streamActive ? (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 1: Initialize Confidential Salary Flow Rate</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 1: Initialize Confidential Salary Flow Rate</span>
                         <div className="flex gap-2 items-end">
                           <div className="flex-1">
-                            <label className="block text-[9px] text-white/40 uppercase mb-0.5">Flow Rate (tokens/block)</label>
+                            <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Flow Rate (tokens/block)</label>
                             <input
                               type="number"
                               value={streamFlowRate}
                               onChange={(e) => setStreamFlowRate(Number(e.target.value))}
-                              className="w-full rounded bg-white/5 border border-white/10 px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                              className="w-full rounded bg-white border border-gray-200 px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                             />
                           </div>
                           <button
                             onClick={handleCreateStream}
                             disabled={isCreatingStream}
-                            className="rounded bg-gradient-to-r from-cyan-400 to-indigo-500 px-4 py-1.5 text-xs font-bold text-black hover:opacity-90 transition h-[32px]"
+                            className="rounded bg-gradient-to-r from-cyan-500 to-indigo-500 px-4 py-1.5 text-xs font-bold text-black hover:opacity-90 transition h-[32px]"
                           >
                             {isCreatingStream ? "Creating..." : "Start Stream"}
                           </button>
@@ -1461,19 +1461,19 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <span className="text-[10px] text-white/40 uppercase block font-semibold">Step 2: Accumulate Blocks & Claim Streaming Yields</span>
+                        <span className="text-[10px] text-gray-400 uppercase block font-semibold">Step 2: Accumulate Blocks & Claim Streaming Yields</span>
                         
-                        <div className="flex justify-between items-center bg-white/5 p-3 rounded border border-white/5">
+                        <div className="flex justify-between items-center bg-white p-3 rounded border border-gray-200">
                           <div>
-                            <span className="text-[10px] text-white/40 block">Accrued Mined Blocks</span>
-                            <span className="text-sm font-mono text-cyan-400 font-bold">{streamBlocksAccrued} blocks</span>
+                            <span className="text-[10px] text-gray-400 block">Accrued Mined Blocks</span>
+                            <span className="text-sm font-mono text-cyan-600 font-bold">{streamBlocksAccrued} blocks</span>
                           </div>
                           <button
                             onClick={() => {
                               setStreamBlocksAccrued(prev => prev + 1);
                               addLog(`Simulated Block Mined! Accrued blocks increased.`);
                             }}
-                            className="rounded border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 px-3 py-1 text-[10px] font-bold transition"
+                            className="rounded border border-indigo-500/30 text-indigo-600 hover:bg-indigo-500/10 px-3 py-1 text-[10px] font-bold transition"
                           >
                             ➕ Mine block
                           </button>
@@ -1488,9 +1488,9 @@ export default function Dashboard() {
                         </button>
 
                         {claimedAmount !== null && (
-                          <div className="rounded p-3 text-xs font-bold flex justify-between items-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                          <div className="rounded p-3 text-xs font-bold flex justify-between items-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-600">
                             <span>📩 Payout Cleared! Received:</span>
-                            <span className="font-mono text-[10px] text-white">
+                            <span className="font-mono text-[10px] text-gray-900">
                               {claimedAmount} native tokens
                             </span>
                           </div>
@@ -1505,30 +1505,30 @@ export default function Dashboard() {
 
           {/* Oracle Action Card */}
           {role === "oracle" && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur">
               <div className="mb-4 flex items-center gap-3">
-                <div className="rounded-lg bg-indigo-500/10 p-2 text-indigo-400">
+                <div className="rounded-lg bg-indigo-500/10 p-2 text-indigo-600">
                   <Activity className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Redundant Sensor Telemetry</h2>
               </div>
 
               {!agentRegistered ? (
-                <p className="text-sm text-white/40 text-center py-6">
+                <p className="text-sm text-gray-400 text-center py-6">
                   Please register an agent first.
                 </p>
               ) : !agentActive ? (
-                <p className="text-sm text-rose-400 text-center py-6 italic font-bold">
+                <p className="text-sm text-rose-600 text-center py-6 italic font-bold">
                   Agent has been deactivated due to auto-liquidation. Telemetry submission is blocked.
                 </p>
               ) : (
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="rounded-lg bg-white/5 p-3 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-2">Sensor A Readings</div>
+                    <div className="rounded-lg bg-white p-3 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-2">Sensor A Readings</div>
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-[10px] text-white/60 mb-1">Completion (0-10)</label>
+                          <label className="block text-[10px] text-gray-600 mb-1">Completion (0-10)</label>
                           <input
                             type="range"
                             min="0"
@@ -1537,10 +1537,10 @@ export default function Dashboard() {
                             onChange={(e) => setInputCompletionA(Number(e.target.value))}
                             className="w-full accent-cyan-500"
                           />
-                          <span className="text-xs text-cyan-400">{inputCompletionA}/10</span>
+                          <span className="text-xs text-cyan-600">{inputCompletionA}/10</span>
                         </div>
                         <div>
-                          <label className="block text-[10px] text-white/60 mb-1">Uptime (0-10)</label>
+                          <label className="block text-[10px] text-gray-600 mb-1">Uptime (0-10)</label>
                           <input
                             type="range"
                             min="0"
@@ -1549,16 +1549,16 @@ export default function Dashboard() {
                             onChange={(e) => setInputUptimeA(Number(e.target.value))}
                             className="w-full accent-cyan-500"
                           />
-                          <span className="text-xs text-cyan-400">{inputUptimeA}/10</span>
+                          <span className="text-xs text-cyan-600">{inputUptimeA}/10</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="rounded-lg bg-white/5 p-3 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-2">Sensor B Readings</div>
+                    <div className="rounded-lg bg-white p-3 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-2">Sensor B Readings</div>
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-[10px] text-white/60 mb-1">Completion (0-10)</label>
+                          <label className="block text-[10px] text-gray-600 mb-1">Completion (0-10)</label>
                           <input
                             type="range"
                             min="0"
@@ -1567,10 +1567,10 @@ export default function Dashboard() {
                             onChange={(e) => setInputCompletionB(Number(e.target.value))}
                             className="w-full accent-cyan-500"
                           />
-                          <span className="text-xs text-cyan-400">{inputCompletionB}/10</span>
+                          <span className="text-xs text-cyan-600">{inputCompletionB}/10</span>
                         </div>
                         <div>
-                          <label className="block text-[10px] text-white/60 mb-1">Uptime (0-10)</label>
+                          <label className="block text-[10px] text-gray-600 mb-1">Uptime (0-10)</label>
                           <input
                             type="range"
                             min="0"
@@ -1579,15 +1579,15 @@ export default function Dashboard() {
                             onChange={(e) => setInputUptimeB(Number(e.target.value))}
                             className="w-full accent-cyan-500"
                           />
-                          <span className="text-xs text-cyan-400">{inputUptimeB}/10</span>
+                          <span className="text-xs text-cyan-600">{inputUptimeB}/10</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-4">
+                  <div className="grid grid-cols-2 gap-4 border-t border-gray-200 pt-4">
                     <div>
-                      <label className="block text-xs text-white/60 mb-1">Latency (0-10)</label>
+                      <label className="block text-xs text-gray-600 mb-1">Latency (0-10)</label>
                       <input
                         type="range"
                         min="0"
@@ -1596,11 +1596,11 @@ export default function Dashboard() {
                         onChange={(e) => setInputLatency(Number(e.target.value))}
                         className="w-full accent-cyan-500"
                       />
-                      <span className="text-xs text-cyan-400">{inputLatency}/10</span>
+                      <span className="text-xs text-cyan-600">{inputLatency}/10</span>
                     </div>
 
                     <div>
-                      <label className="block text-xs text-white/60 mb-1">Error Rate (0-10)</label>
+                      <label className="block text-xs text-gray-600 mb-1">Error Rate (0-10)</label>
                       <input
                         type="range"
                         min="0"
@@ -1609,7 +1609,7 @@ export default function Dashboard() {
                         onChange={(e) => setInputError(Number(e.target.value))}
                         className="w-full accent-rose-500"
                       />
-                      <span className="text-xs text-rose-400">{inputError}/10</span>
+                      <span className="text-xs text-rose-600">{inputError}/10</span>
                     </div>
                   </div>
 
@@ -1621,12 +1621,12 @@ export default function Dashboard() {
                     Encrypt & Submit Telemetry
                   </button>
 
-                  <div className="border-t border-white/5 pt-4">
-                    <h3 className="mb-2 text-xs font-semibold text-white/50">Emergency Slashing</h3>
+                  <div className="border-t border-gray-200 pt-4">
+                    <h3 className="mb-2 text-xs font-semibold text-gray-500">Emergency Slashing</h3>
                     <button
                       onClick={handleRequestSlash}
                       disabled={isSlashing}
-                      className="rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition px-4 py-2 text-xs font-bold"
+                      className="rounded bg-rose-500/10 border border-rose-500/20 text-rose-600 hover:bg-rose-500/20 transition px-4 py-2 text-xs font-bold"
                     >
                       {isSlashing ? "Checking..." : "Trigger Slash Check (SLA Breach)"}
                     </button>
@@ -1638,128 +1638,128 @@ export default function Dashboard() {
 
           {/* Underwriter Action Card */}
           {role === "underwriter" && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur">
               <div className="mb-4 flex items-center gap-3">
-                <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-400">
+                <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-600">
                   <Shield className="h-5 w-5" />
                 </div>
                 <h2 className="text-lg font-bold">Confidential Risk Underwriting</h2>
               </div>
 
               {!agentRegistered ? (
-                <p className="text-sm text-white/40 text-center py-6">
+                <p className="text-sm text-gray-400 text-center py-6">
                   Please register an agent first.
                 </p>
               ) : (
                 <div className="space-y-4">
-                  <p className="text-xs text-white/60">
+                  <p className="text-xs text-gray-600">
                     As an authorized underwriter, you have read-access to the agent's derived risk parameters.
                   </p>
                   
                   <div className="grid gap-4 grid-cols-2">
-                    <div className="rounded bg-white/5 p-4 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-1">Encrypted Trust Score</div>
-                      <div className="text-xs font-mono text-cyan-400 truncate">{encryptedScore}</div>
+                    <div className="rounded bg-white p-4 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-1">Encrypted Trust Score</div>
+                      <div className="text-xs font-mono text-cyan-600 truncate">{encryptedScore}</div>
                       {decryptedScore !== null ? (
-                        <div className="mt-2 text-lg font-bold text-white">{decryptedScore} / 1000</div>
+                        <div className="mt-2 text-lg font-bold text-gray-900">{decryptedScore} / 1000</div>
                       ) : (
-                        <div className="mt-2 text-xs text-white/30 italic">Decrypt to view</div>
+                        <div className="mt-2 text-xs text-gray-400 italic">Decrypt to view</div>
                       )}
                     </div>
 
-                    <div className="rounded bg-white/5 p-4 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-1">Required Bond</div>
-                      <div className="text-xs font-mono text-cyan-400 truncate">{encryptedRequiredBond}</div>
+                    <div className="rounded bg-white p-4 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-1">Required Bond</div>
+                      <div className="text-xs font-mono text-cyan-600 truncate">{encryptedRequiredBond}</div>
                       {decryptedRequiredBond !== null ? (
-                        <div className="mt-2 text-lg font-bold text-white">{decryptedRequiredBond} ETH</div>
+                        <div className="mt-2 text-lg font-bold text-gray-900">{decryptedRequiredBond} ETH</div>
                       ) : (
-                        <div className="mt-2 text-xs text-white/30 italic">Decrypt to view</div>
+                        <div className="mt-2 text-xs text-gray-400 italic">Decrypt to view</div>
                       )}
                     </div>
 
-                    <div className="rounded bg-white/5 p-4 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-1">Encrypted Delegated Bond</div>
-                      <div className="text-xs font-mono text-cyan-400 truncate">{encryptedDelegatedBond}</div>
-                      <div className="mt-2 text-xs text-white/50">{delegatedBond > 0 ? `${delegatedBond} ETH` : "0 ETH"}</div>
+                    <div className="rounded bg-white p-4 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-1">Encrypted Delegated Bond</div>
+                      <div className="text-xs font-mono text-cyan-600 truncate">{encryptedDelegatedBond}</div>
+                      <div className="mt-2 text-xs text-gray-500">{delegatedBond > 0 ? `${delegatedBond} ETH` : "0 ETH"}</div>
                     </div>
 
-                    <div className="rounded bg-white/5 p-4 border border-white/5">
-                      <div className="text-[10px] text-white/40 uppercase mb-1">Encrypted Accrued Interest</div>
-                      <div className="text-xs font-mono text-cyan-400 truncate">{encryptedInterestAccumulated}</div>
-                      <div className="mt-2 text-xs text-white/50">{interestAccumulated > 0 ? `${interestAccumulated} ETH` : "0 ETH"}</div>
+                    <div className="rounded bg-white p-4 border border-gray-200">
+                      <div className="text-[10px] text-gray-400 uppercase mb-1">Encrypted Accrued Interest</div>
+                      <div className="text-xs font-mono text-cyan-600 truncate">{encryptedInterestAccumulated}</div>
+                      <div className="mt-2 text-xs text-gray-500">{interestAccumulated > 0 ? `${interestAccumulated} ETH` : "0 ETH"}</div>
                     </div>
 
-                    <div className="rounded bg-white/5 p-4 border border-white/5 col-span-2">
-                      <div className="text-[10px] text-white/40 uppercase mb-1">FHE Yield Curve Calibration (APR)</div>
-                      <div className="flex items-center gap-2 mt-2 text-xs text-cyan-400">
-                        <Percent className="h-4 w-4 text-emerald-500" />
+                    <div className="rounded bg-white p-4 border border-gray-200 col-span-2">
+                      <div className="text-[10px] text-gray-400 uppercase mb-1">FHE Yield Curve Calibration (APR)</div>
+                      <div className="flex items-center gap-2 mt-2 text-xs text-cyan-600">
+                        <Percent className="h-4 w-4 text-emerald-600" />
                         <span>High Trust: 1% APR | Med Trust: 5% APR | Low Trust: 25% APR (Confidential)</span>
                       </div>
                     </div>
                   </div>
 
                   {/* FHE-ML Perceptron Control & Real-time Evaluation */}
-                  <div className="border-t border-white/5 pt-4 space-y-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
+                  <div className="border-t border-gray-200 pt-4 space-y-4">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
                       Confidential FHE-ML Neural Perceptron
                     </h3>
-                    <p className="text-xs text-white/50">
+                    <p className="text-xs text-gray-500">
                       Configure the underwriter neuron weights and model bias. Telemetry inputs pass through this single-layer neural node under FHE.
                     </p>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">W_Comp</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">W_Comp</label>
                         <input
                           type="number"
                           value={wComp}
                           onChange={(e) => setWComp(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">W_Uptime</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">W_Uptime</label>
                         <input
                           type="number"
                           value={wUpt}
                           onChange={(e) => setWUpt(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">W_Latency</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">W_Latency</label>
                         <input
                           type="number"
                           value={wLat}
                           onChange={(e) => setWLat(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">W_Error</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">W_Error</label>
                         <input
                           type="number"
                           value={wErr}
                           onChange={(e) => setWErr(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">Bias</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Bias</label>
                         <input
                           type="number"
                           value={bias}
                           onChange={(e) => setBias(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-white/40 uppercase mb-1">Limit</label>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Limit</label>
                         <input
                           type="number"
                           value={riskThreshold}
                           onChange={(e) => setRiskThreshold(Number(e.target.value))}
-                          className="w-full rounded bg-white/5 border border-white/10 px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
                         />
                       </div>
                     </div>
@@ -1773,14 +1773,14 @@ export default function Dashboard() {
                       Calibrate Perceptron
                     </button>
 
-                    <div className="rounded bg-black/30 p-3 border border-white/5 grid grid-cols-2 gap-4">
+                    <div className="rounded bg-gray-50 p-3 border border-gray-200 grid grid-cols-2 gap-4">
                       <div className="min-w-0">
-                        <span className="text-[10px] text-white/40 uppercase block mb-1">Encrypted Neural Risk</span>
-                        <span className="text-xs font-mono text-cyan-400 truncate block">{encryptedNeuralRisk}</span>
+                        <span className="text-[10px] text-gray-400 uppercase block mb-1">Encrypted Neural Risk</span>
+                        <span className="text-xs font-mono text-cyan-600 truncate block">{encryptedNeuralRisk}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-white/40 uppercase block mb-1">Decrypted ReLU Risk</span>
-                        <span className="text-sm font-bold text-white block">
+                        <span className="text-[10px] text-gray-400 uppercase block mb-1">Decrypted ReLU Risk</span>
+                        <span className="text-sm font-bold text-gray-900 block">
                           {decryptedNeuralRisk !== null ? `${decryptedNeuralRisk} / ${riskThreshold}` : "Decrypt to view"}
                         </span>
                       </div>
@@ -1789,7 +1789,7 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => addLog("Underwriter decrypted trust scoring details client-side via Zama Relayer.")}
-                    className="w-full border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 py-2 text-xs font-bold rounded transition"
+                    className="w-full border border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10 py-2 text-xs font-bold rounded transition"
                   >
                     Fetch & Decrypt Risk Params
                   </button>
@@ -1799,21 +1799,21 @@ export default function Dashboard() {
           )}
 
           {/* Interactive FHE Terminal */}
-          <div className="rounded-xl border border-white/10 bg-black/40 p-6 font-mono text-xs">
-            <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 font-mono text-xs">
+            <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
               <div className="flex items-center gap-2">
-                <Terminal className="h-4 w-4 text-cyan-400" />
-                <span className="font-bold text-white/80">Bayesian Telemetry Logs</span>
+                <Terminal className="h-4 w-4 text-cyan-600" />
+                <span className="font-bold text-gray-800">Bayesian Telemetry Logs</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] text-white/40 uppercase">LIVE</span>
+                <span className="text-[10px] text-gray-400 uppercase">LIVE</span>
               </div>
             </div>
             
-            <div className="h-40 overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-white/10">
+            <div className="h-40 overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-gray-300">
               {logs.map((log, index) => (
-                <div key={index} className="text-white/70">
+                <div key={index} className="text-gray-700">
                   {log}
                 </div>
               ))}
@@ -1824,112 +1824,112 @@ export default function Dashboard() {
         {/* Right Side: State & Badges */}
         <div className="space-y-6 lg:col-span-5">
           {/* Agent Reputation Card */}
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <h2 className="mb-4 text-lg font-bold text-white">Underwriting Status</h2>
+          <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur">
+            <h2 className="mb-4 text-lg font-bold text-gray-900">Underwriting Status</h2>
             
             <div className="space-y-4">
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Agent Status</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Agent Status</span>
                 {agentRegistered ? (
                   agentActive ? (
-                    <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+                    <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 border border-emerald-500/20">
                       Active / Underwritten
                     </span>
                   ) : (
-                    <span className="rounded bg-rose-500/10 px-2 py-0.5 text-xs font-medium text-rose-400 border border-rose-500/20">
+                    <span className="rounded bg-rose-500/10 px-2 py-0.5 text-xs font-medium text-rose-600 border border-rose-500/20">
                       Liquidated / Inactive
                     </span>
                   )
                 ) : (
-                  <span className="rounded bg-white/5 px-2 py-0.5 text-xs font-medium text-white/30">
+                  <span className="rounded bg-white px-2 py-0.5 text-xs font-medium text-gray-400">
                     Unregistered
                   </span>
                 )}
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                 <div className="flex items-center gap-1">
-                  <span className="text-xs text-white/50">Uncertainty Variance (σ²)</span>
-                  <span className="text-[10px] text-white/30 uppercase">(Public)</span>
+                  <span className="text-xs text-gray-500">Uncertainty Variance (σ²)</span>
+                  <span className="text-[10px] text-gray-400 uppercase">(Public)</span>
                 </div>
-                <span className="text-sm font-bold text-cyan-400">{trustScoreVar}</span>
+                <span className="text-sm font-bold text-cyan-600">{trustScoreVar}</span>
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Self-Posted Collateral</span>
-                <span className="text-sm font-bold text-white">{postedCollateral} ETH</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Self-Posted Collateral</span>
+                <span className="text-sm font-bold text-gray-900">{postedCollateral} ETH</span>
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Borrowed (Delegated) Bond</span>
-                <span className="text-sm font-bold text-indigo-400">{delegatedBond} ETH</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Borrowed (Delegated) Bond</span>
+                <span className="text-sm font-bold text-indigo-600">{delegatedBond} ETH</span>
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Encrypted Trust Score Mean</span>
-                <span className="text-xs font-mono text-cyan-400/80">{encryptedScore}</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Encrypted Trust Score Mean</span>
+                <span className="text-xs font-mono text-cyan-600/80">{encryptedScore}</span>
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Encrypted Required Bond</span>
-                <span className="text-xs font-mono text-cyan-400/80">{encryptedRequiredBond}</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Encrypted Required Bond</span>
+                <span className="text-xs font-mono text-cyan-600/80">{encryptedRequiredBond}</span>
               </div>
 
-              <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                <span className="text-xs text-white/50">Collateral Sufficiency</span>
+              <div className="flex justify-between items-center border-b border-gray-200 pb-2">
+                <span className="text-xs text-gray-500">Collateral Sufficiency</span>
                 {decryptedSufficiency !== null ? (
                   decryptedSufficiency ? (
-                    <span className="flex items-center gap-1 text-xs text-emerald-400 font-semibold">
+                    <span className="flex items-center gap-1 text-xs text-emerald-600 font-semibold">
                       <CheckCircle2 className="h-4 w-4" /> Sufficient
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-xs text-rose-400 font-semibold">
+                    <span className="flex items-center gap-1 text-xs text-rose-600 font-semibold">
                       <AlertTriangle className="h-4 w-4" /> Insufficient
                     </span>
                   )
                 ) : (
-                  <span className="text-xs font-mono text-cyan-400/80">{encryptedSufficiency}</span>
+                  <span className="text-xs font-mono text-cyan-600/80">{encryptedSufficiency}</span>
                 )}
               </div>
             </div>
           </div>
 
           {/* Soulbound Reputation Badge */}
-          <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur flex flex-col items-center text-center">
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 backdrop-blur flex flex-col items-center text-center">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
               Reputation Badge
             </h3>
             
             {agentRegistered && agentActive && decryptedScore !== null ? (
-              <div className="w-full max-w-[200px] aspect-square rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-white/20 p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(6,182,212,0.15)] relative overflow-hidden group">
+              <div className="w-full max-w-[200px] aspect-square rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-gray-300 p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(6,182,212,0.15)] relative overflow-hidden group">
                 {/* Glow ring */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="flex justify-between items-start">
-                  <Shield className="h-8 w-8 text-cyan-400" />
-                  <span className="text-[10px] font-mono text-white/40">CTRUST #000</span>
+                  <Shield className="h-8 w-8 text-cyan-600" />
+                  <span className="text-[10px] font-mono text-gray-400">CTRUST #000</span>
                 </div>
                 
                 <div className="text-left mt-4">
-                  <div className="text-xs text-white/50">Trust Tier</div>
+                  <div className="text-xs text-gray-500">Trust Tier</div>
                   <div className="text-xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
                     {decryptedScore >= 750 ? "HIGH TRUST" : decryptedScore >= 400 ? "MEDIUM TRUST" : "LOW TRUST"}
                   </div>
                 </div>
 
-                <div className="text-left mt-2 border-t border-white/10 pt-2 flex justify-between items-center text-[10px] text-white/40">
+                <div className="text-left mt-2 border-t border-gray-200 pt-2 flex justify-between items-center text-[10px] text-gray-400">
                   <span>Soulbound NFT</span>
-                  <CheckCircle2 className="h-3 w-3 text-cyan-400" />
+                  <CheckCircle2 className="h-3 w-3 text-cyan-600" />
                 </div>
               </div>
             ) : (
-              <div className="w-full max-w-[200px] aspect-square rounded-2xl border border-white/5 bg-white/2 p-6 flex flex-col items-center justify-center text-white/20">
+              <div className="w-full max-w-[200px] aspect-square rounded-2xl border border-gray-200 bg-white p-6 flex flex-col items-center justify-center text-gray-300">
                 <Lock className="h-10 w-10 mb-2" />
                 <span className="text-xs">Badge Locked</span>
               </div>
             )}
             
-            <p className="mt-4 text-xs text-white/40">
+            <p className="mt-4 text-xs text-gray-400">
               Minted automatically on ReputationBadge.sol after a public tier reveal.
             </p>
           </div>
