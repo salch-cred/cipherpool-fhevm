@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 const STEPS = [
   {
     step: "01",
@@ -40,19 +44,26 @@ export default function HowItWorks() {
           How it works
         </h2>
       </div>
-      <div className="mt-14 space-y-4">
-        {STEPS.map((item) => (
-          <div
-            key={item.step}
-            className="card flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-center"
-          >
-            <div className="font-mono text-2xl font-semibold text-primary/60">{item.step}</div>
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">{item.title}</h3>
-              <p className="mt-1 text-sm text-gray-600">{item.description}</p>
-            </div>
-          </div>
-        ))}
+      <div className="relative mt-14">
+        <div className="absolute left-[27px] top-2 bottom-2 hidden w-px bg-border sm:block" />
+        <div className="space-y-4">
+          {STEPS.map((item, i) => (
+            <motion.div
+              key={item.step}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="card relative flex flex-col gap-4 rounded-2xl p-6 sm:flex-row sm:items-center"
+            >
+              <div className="font-mono text-2xl font-semibold text-primary/60">{item.step}</div>
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">{item.title}</h3>
+                <p className="mt-1 text-sm text-gray-600">{item.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
