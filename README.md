@@ -49,13 +49,20 @@ Allows organizations to stream payroll or staking yields to agents with encrypte
 $$\text{accrued} = \text{flowRate} \cdot \Delta B$$
 Decrypted tokens are safely dispatched via secure KMS callbacks directly to the agent's wallet.
 
-### 4. Encrypted Bayesian Filter (EBF)
+### 4. FHE-Triangulation (Confidential Physical Location Verification)
+Ingests encrypted distance squared values ($d_A^2, d_B^2, d_C^2$) from 3 anchor beacons and validates coordinates $(X, Y)$ under FHE:
+$$\text{calcDistSq}_i = (X - X_i)^2 + (Y - Y_i)^2$$
+$$\text{error}_i = |\text{calcDistSq}_i - d_i^2|$$
+$$\text{totalError} = \text{error}_A + \text{error}_B + \text{error}_C \le 100$$
+Allows DePIN and robot fleets to verify geographic boundaries without revealing coordinate coordinates.
+
+### 5. Encrypted Bayesian Filter (EBF)
 Monitors real-time operational reliability. The core trust score mean ($\mu_t$) is kept encrypted as an FHE handle, while the estimation uncertainty variance ($\sigma^2_t$) is tracked publicly:
 $$\sigma^2_{t+1} = \frac{\sigma^2_t \cdot \sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \alpha = \frac{\sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \beta = \frac{\sigma^2_t}{\sigma^2_t + \sigma^2_{obs}}$$
 $$\mu_{t+1} = \alpha \cdot \mu_t + \beta \cdot x_{obs}$$
 As uncertainty decays, the required collateral bond reduces dynamically.
 
-### 5. FHE-Shield (Anti-Spam Filter) & FHE-Pass (Challenge-Response MFA)
+### 6. FHE-Shield (Anti-Spam Filter) & FHE-Pass (Challenge-Response MFA)
 *   **FHE-Shield:** Filters agent inbox communications using an on-chain encrypted Bayesian categorizer.
 *   **FHE-Pass:** Standard passwordless challenge-response verification entirely under FHE.
 
@@ -67,7 +74,7 @@ As uncertainty decays, the required collateral bond reduces dynamically.
 *   `contracts/InsurancePool.sol`: ERC-4626 capital vault funded by slashed rogue agent bonds.
 *   `contracts/ReputationBadge.sol`: Soulbound ERC-721 badge showing revealed trust tiers.
 *   `contracts/AgentIdentityRegistry.sol`: ERC-8004 portable identity and passport mapping.
-*   `test/CipherTrust.test.ts`: Complete unit test suite (19 passing tests covering all FHE edge cases).
+*   `test/CipherTrust.test.ts`: Complete unit test suite (20 passing tests covering all FHE edge cases).
 *   `frontend/`: Premium Next.js application built with warm cream aesthetics and Framer Motion glassmorphism.
 
 ---
