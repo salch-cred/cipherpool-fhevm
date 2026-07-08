@@ -36,7 +36,7 @@ const FEATURES = [
     icon: Alert02Icon,
     title: "Async confidential slashing",
     description:
-      "SLA breaches are checked as an encrypted flag, revealed only through Zama's public-decrypt + signature-verification flow, before any penalty is applied.",
+      "SLA breaches are checked as an encrypted flag, revealed only through async public-decrypt + signature-verification flow, before any penalty is applied.",
   },
   {
     icon: ViewIcon,

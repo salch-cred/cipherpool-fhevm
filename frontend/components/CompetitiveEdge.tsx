@@ -5,14 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
 
 const ROWS = [
-  { project: "Pendex (Dec 2025 winner)", domain: "FHE dark-pool leveraged trading" },
+  { project: "Pendex Protocol", domain: "FHE dark-pool leveraged trading" },
   {
-    project: "Confidential Derivatives (Season 2 winner)",
+    project: "Confidential Derivatives Engine",
     domain: "Encrypted perpetuals, options, order book",
   },
-  { project: "MARC Protocol (Season 1 winner)", domain: "Encrypted agent payment infrastructure" },
-  { project: "CipherMint (Season 1 winner)", domain: "Confidential universal basic income" },
-  { project: "x402fhe (Zama reference app)", domain: "Agent payments & payment-based reputation" },
+  { project: "MARC Pay System", domain: "Encrypted agent payment infrastructure" },
+  { project: "CipherMint UBI", domain: "Confidential universal basic income" },
+  { project: "x402fhe Framework", domain: "Agent payments & payment-based reputation" },
   {
     project: "CipherTrust",
     domain: "Confidential underwriting for autonomous agents & robots",
