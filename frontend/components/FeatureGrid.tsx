@@ -45,18 +45,19 @@ export default function FeatureGrid() {
   return (
     <section id="features" className="mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <p className="eyebrow justify-center text-primary">Protocol capabilities</p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
           Everything an underwriter needs. Nothing an attacker can use.
         </h2>
-        <p className="mt-4 text-white/60">
+        <p className="mt-4 text-gray-600">
           A confidential risk engine purpose-built for non-human, autonomous actors.
         </p>
       </div>
       <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((feature) => (
-          <div key={feature.title} className="glass-card rounded-2xl p-6 transition hover:border-brand-purple/50">
-            <h3 className="text-base font-semibold text-white">{feature.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-white/55">{feature.description}</p>
+          <div key={feature.title} className="card card-hover rounded-2xl p-6">
+            <h3 className="text-base font-semibold text-gray-900">{feature.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600">{feature.description}</p>
           </div>
         ))}
       </div>
