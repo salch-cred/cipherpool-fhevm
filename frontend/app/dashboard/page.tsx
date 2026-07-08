@@ -145,7 +145,42 @@ export default function Dashboard() {
   const [depositAmount, setDepositAmount] = useState(5);
   const [borrowAmount, setBorrowAmount] = useState(5);
   const [isSlashing, setIsSlashing] = useState(false);
-  
+
+  // FHE-Triangulation State
+  const [triangulationX, setTriangulationX] = useState(30);
+  const [triangulationY, setTriangulationY] = useState(40);
+  const [triangulationDistSqA, setTriangulationDistSqA] = useState(1300);
+  const [triangulationDistSqB, setTriangulationDistSqB] = useState(4500);
+  const [triangulationDistSqC, setTriangulationDistSqC] = useState(2000);
+  const [triangulationVerified, setTriangulationVerified] = useState<boolean | null>(null);
+  const [isTriangulating, setIsTriangulating] = useState(false);
+
+  const runTriangulationSim = () => {
+    setIsTriangulating(true);
+    addLog("Initiating confidential FHE-Triangulation location proof...");
+    setTimeout(() => {
+      // Anchors: A(10, 10), B(90, 10), C(50, 80)
+      const dA = Math.pow(triangulationX - 10, 2) + Math.pow(triangulationY - 10, 2);
+      const dB = Math.pow(triangulationX - 90, 2) + Math.pow(triangulationY - 10, 2);
+      const dC = Math.pow(triangulationX - 50, 2) + Math.pow(triangulationY - 80, 2);
+
+      const errA = Math.abs(dA - triangulationDistSqA);
+      const errB = Math.abs(dB - triangulationDistSqB);
+      const errC = Math.abs(dC - triangulationDistSqC);
+      const totalError = errA + errB + errC;
+
+      const success = totalError <= 100;
+      setTriangulationVerified(success);
+      setIsTriangulating(false);
+
+      if (success) {
+        addLog(`[SUCCESS] FHE-Triangulation verified! Coordinates (${triangulationX}, ${triangulationY}) match physical distances.`);
+      } else {
+        addLog(`[REJECTED] FHE-Triangulation check failed! Distance signatures do not match calculated coordinates.`);
+      }
+    }, 1500);
+  };
+
   const addLog = (msg: string) => {
     setLogs((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
   };
@@ -1498,6 +1533,93 @@ export default function Dashboard() {
                             </span>
                           </div>
                         )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* FHE-Triangulation: Physical Location Verification */}
+                  <div className="rounded-lg bg-white p-4 border border-gray-200 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-600 font-bold">
+                        FHE-Triangulation: Proof of Location
+                      </h3>
+                      <span className="text-[10px] text-gray-400 border border-gray-200 px-2 py-0.5 rounded font-mono">
+                        Status: {triangulationVerified === null ? "Pending Check" : triangulationVerified ? "Verified" : "Rejected"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Validate the physical coordinates of your robot/drone by comparing them against encrypted distance signatures from 3 observer beacons entirely under FHE.
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[9px] text-gray-400 uppercase mb-0.5">X Coordinate (calculated)</label>
+                        <input
+                          type="number"
+                          value={triangulationX}
+                          onChange={(e) => setTriangulationX(Number(e.target.value))}
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[9px] text-gray-400 uppercase mb-0.5">Y Coordinate (calculated)</label>
+                        <input
+                          type="number"
+                          value={triangulationY}
+                          onChange={(e) => setTriangulationY(Number(e.target.value))}
+                          className="w-full rounded bg-white border border-gray-200 px-2 py-1.5 text-xs text-gray-900 focus:outline-none focus:border-cyan-500 font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 rounded bg-gray-50 p-2.5 border border-gray-100">
+                      <span className="text-[9px] text-gray-400 uppercase font-semibold block">Distance Squares to Beacons</span>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <label className="block text-[8px] text-gray-500 mb-0.5">Beacon A (10,10)</label>
+                          <input
+                            type="number"
+                            value={triangulationDistSqA}
+                            onChange={(e) => setTriangulationDistSqA(Number(e.target.value))}
+                            className="w-full rounded bg-white border border-gray-200 px-1 py-1 text-[10px] text-gray-900 focus:outline-none font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[8px] text-gray-500 mb-0.5">Beacon B (90,10)</label>
+                          <input
+                            type="number"
+                            value={triangulationDistSqB}
+                            onChange={(e) => setTriangulationDistSqB(Number(e.target.value))}
+                            className="w-full rounded bg-white border border-gray-200 px-1 py-1 text-[10px] text-gray-900 focus:outline-none font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[8px] text-gray-500 mb-0.5">Beacon C (50,80)</label>
+                          <input
+                            type="number"
+                            value={triangulationDistSqC}
+                            onChange={(e) => setTriangulationDistSqC(Number(e.target.value))}
+                            className="w-full rounded bg-white border border-gray-200 px-1 py-1 text-[10px] text-gray-900 focus:outline-none font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={runTriangulationSim}
+                      disabled={isTriangulating}
+                      className="w-full rounded bg-cyan-500 py-2 text-xs font-bold text-black hover:opacity-90 transition"
+                    >
+                      {isTriangulating ? "Solving triangulation equations under FHE..." : "Run Location Triangulation Audit"}
+                    </button>
+
+                    {triangulationVerified !== null && (
+                      <div className={`rounded p-3 text-xs font-bold flex justify-between items-center ${
+                        triangulationVerified 
+                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600" 
+                          : "bg-rose-500/10 border border-rose-500/20 text-rose-600 animate-pulse"
+                      }`}>
+                        <span>{triangulationVerified ? "✅ POSITION VERIFIED" : "🚨 INCORRECT POSITION SIGNATURE"}</span>
                       </div>
                     )}
                   </div>

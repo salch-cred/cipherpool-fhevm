@@ -1249,5 +1249,72 @@ contract CipherTrust is SepoliaConfig {
         emit StreamClaimed(recipient, amount);
     }
 
+    // FHE-Triangulation: Proof of physical location
+    mapping(uint256 => address) public triangulationRequests;
+    mapping(address => bool) public locationVerified;
+
+    event TriangulationRequested(address indexed operator, uint256 requestId);
+    event TriangulationResult(address indexed operator, bool success);
+
+    function requestTriangulation(
+        externalEuint64 encryptedX,
+        externalEuint64 encryptedY,
+        externalEuint64 encryptedDistSqA,
+        externalEuint64 encryptedDistSqB,
+        externalEuint64 encryptedDistSqC,
+        bytes calldata inputProof
+    ) external returns (uint256 requestId) {
+        euint64 x = FHE.fromExternal(encryptedX, inputProof);
+        euint64 y = FHE.fromExternal(encryptedY, inputProof);
+        euint64 distSqA = FHE.fromExternal(encryptedDistSqA, inputProof);
+        euint64 distSqB = FHE.fromExternal(encryptedDistSqB, inputProof);
+        euint64 distSqC = FHE.fromExternal(encryptedDistSqC, inputProof);
+
+        // Anchor A (10, 10)
+        euint64 dxA = FHE.select(FHE.lt(x, 10), FHE.sub(10, x), FHE.sub(x, 10));
+        euint64 dyA = FHE.select(FHE.lt(y, 10), FHE.sub(10, y), FHE.sub(y, 10));
+        euint64 calcDistSqA = FHE.add(FHE.mul(dxA, dxA), FHE.mul(dyA, dyA));
+        euint64 errA = FHE.select(FHE.lt(calcDistSqA, distSqA), FHE.sub(distSqA, calcDistSqA), FHE.sub(calcDistSqA, distSqA));
+
+        // Anchor B (90, 10)
+        euint64 dxB = FHE.select(FHE.lt(x, 90), FHE.sub(90, x), FHE.sub(x, 90));
+        euint64 dyB = FHE.select(FHE.lt(y, 10), FHE.sub(10, y), FHE.sub(y, 10));
+        euint64 calcDistSqB = FHE.add(FHE.mul(dxB, dxB), FHE.mul(dyB, dyB));
+        euint64 errB = FHE.select(FHE.lt(calcDistSqB, distSqB), FHE.sub(distSqB, calcDistSqB), FHE.sub(calcDistSqB, distSqB));
+
+        // Anchor C (50, 80)
+        euint64 dxC = FHE.select(FHE.lt(x, 50), FHE.sub(50, x), FHE.sub(x, 50));
+        euint64 dyC = FHE.select(FHE.lt(y, 80), FHE.sub(80, y), FHE.sub(y, 80));
+        euint64 calcDistSqC = FHE.add(FHE.mul(dxC, dxC), FHE.mul(dyC, dyC));
+        euint64 errC = FHE.select(FHE.lt(calcDistSqC, distSqC), FHE.sub(distSqC, calcDistSqC), FHE.sub(calcDistSqC, calcDistSqC));
+
+        euint64 totalError = FHE.add(FHE.add(errA, errB), errC);
+        ebool verified = FHE.le(totalError, 100);
+        FHE.allowThis(verified);
+
+        bytes32[] memory cts = new bytes32[](1);
+        cts[0] = ebool.unwrap(verified);
+
+        requestId = FHE.requestDecryption(cts, this.fulfillTriangulation.selector);
+        triangulationRequests[requestId] = msg.sender;
+
+        emit TriangulationRequested(msg.sender, requestId);
+    }
+
+    function fulfillTriangulation(
+        uint256 requestId,
+        bytes memory cleartexts,
+        bytes memory decryptionProof
+    ) external {
+        FHE.checkSignatures(requestId, cleartexts, decryptionProof);
+
+        bool success = abi.decode(cleartexts, (bool));
+        address operator = triangulationRequests[requestId];
+        delete triangulationRequests[requestId];
+
+        locationVerified[operator] = success;
+        emit TriangulationResult(operator, success);
+    }
+
     receive() external payable {}
 }

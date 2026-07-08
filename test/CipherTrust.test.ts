@@ -850,4 +850,59 @@ describe("CipherTrust FHE with Bayesian Filter and Sensor Fusion", function () {
     expect(events.length).to.equal(1);
     expect(events[0].args.amount).to.equal(6000n);
   });
+
+  it("handles confidential location triangulation and physical proof checks (FHE-Triangulation)", async () => {
+    const ctAddress = await cipherTrust.getAddress();
+
+    // 1. Success case: actual location (30, 40)
+    // Distance Squares to Beacons:
+    // A(10, 10): 1300, B(90, 10): 4500, C(50, 80): 2000
+    const successInput = hre.fhevm.createEncryptedInput(ctAddress, operator.address);
+    successInput.add64(30);
+    successInput.add64(40);
+    successInput.add64(1300);
+    successInput.add64(4500);
+    successInput.add64(2000);
+    const successEnc = await successInput.encrypt();
+
+    await (
+      await cipherTrust.connect(operator).requestTriangulation(
+        successEnc.handles[0],
+        successEnc.handles[1],
+        successEnc.handles[2],
+        successEnc.handles[3],
+        successEnc.handles[4],
+        successEnc.inputProof
+      )
+    ).wait();
+
+    await hre.fhevm.awaitDecryptionOracle();
+
+    expect(await cipherTrust.locationVerified(operator.address)).to.be.true;
+
+    // 2. Failure case: spoofed distance coordinates (e.g. sending 0 for distances)
+    const spoofInput = hre.fhevm.createEncryptedInput(ctAddress, operator.address);
+    spoofInput.add64(30);
+    spoofInput.add64(40);
+    spoofInput.add64(0);
+    spoofInput.add64(0);
+    spoofInput.add64(0);
+    const spoofEnc = await spoofInput.encrypt();
+
+    await (
+      await cipherTrust.connect(operator).requestTriangulation(
+        spoofEnc.handles[0],
+        spoofEnc.handles[1],
+        spoofEnc.handles[2],
+        spoofEnc.handles[3],
+        spoofEnc.handles[4],
+        spoofEnc.inputProof
+      )
+    ).wait();
+
+    await hre.fhevm.awaitDecryptionOracle();
+
+    expect(await cipherTrust.locationVerified(operator.address)).to.be.false;
+  });
 });
+
