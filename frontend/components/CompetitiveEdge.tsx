@@ -1,3 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+
 const ROWS = [
   { project: "Pendex (Dec 2025 winner)", domain: "FHE dark-pool leveraged trading" },
   {
@@ -35,23 +41,33 @@ export default function CompetitiveEdge() {
           .
         </p>
       </div>
-      <div className="card mt-10 overflow-hidden rounded-2xl">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+        className="card mt-10 overflow-hidden rounded-2xl"
+      >
         {ROWS.map((row) => (
-          <div
+          <motion.div
             key={row.project}
+            variants={{ hidden: { opacity: 0 }, show: { opacity: 1 } }}
             className={`flex flex-col justify-between gap-1 border-b border-border px-6 py-4 last:border-b-0 sm:flex-row sm:items-center ${
               row.highlight ? "bg-primary-light" : ""
             }`}
           >
             <span
-              className={`text-sm font-medium ${row.highlight ? "text-primary" : "text-gray-800"}`}
+              className={`flex items-center gap-2 text-sm font-medium ${
+                row.highlight ? "text-primary" : "text-gray-800"
+              }`}
             >
+              {row.highlight && <HugeiconsIcon icon={CheckmarkCircle02Icon} size={15} />}
               {row.project}
             </span>
             <span className="text-sm text-gray-500">{row.domain}</span>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

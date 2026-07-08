@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function Architecture() {
   return (
     <section id="architecture" className="mx-auto max-w-5xl px-6 py-24">
@@ -8,7 +12,13 @@ export default function Architecture() {
         </h2>
         <p className="mt-4 text-gray-600">Five focused contracts, each independently auditable.</p>
       </div>
-      <pre className="card mt-10 overflow-x-auto rounded-2xl p-6 font-mono text-xs leading-relaxed text-gray-700 sm:text-sm">
+      <motion.pre
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.5 }}
+        className="card mt-10 overflow-x-auto rounded-2xl p-6 font-mono text-xs leading-relaxed text-gray-700 sm:text-sm"
+      >
 {`CipherTrust.sol             core risk engine (FHE trust score, bond tiers, slashing)
 AgentIdentityRegistry.sol   ERC-8004-inspired portable identity for agents/robots
 ReputationBadge.sol         soulbound ERC-721 badge for publicly revealed trust tiers
@@ -18,7 +28,7 @@ Oracle ──encrypted telemetry──▶ CipherTrust ──derives──▶ enc
                                      │
                                      ├──opt-in reveal──▶ ReputationBadge (public tier)
                                      └──breach + decrypt──▶ InsurancePool (LP yield)`}
-      </pre>
+      </motion.pre>
     </section>
   );
 }
