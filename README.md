@@ -84,6 +84,7 @@ Decrypted tokens are claimed and dispatched using secure KMS callbacks.
 *   `contracts/AgentIdentityRegistry.sol`: ERC-8004 portable identity and passport mapping.
 *   `test/CipherTrust.test.ts`: Complete unit test suite (20 passing tests covering all FHE edge cases).
 *   `scripts/oracle_service.ts`: Background daemon script executing coordinates triangulation updates.
+*   `scripts/setup_database.sql`: SQL schema script to configure your Supabase/PostgreSQL database tables and indexes.
 *   `Dockerfile`: Deployment container configuration for Hugging Face Spaces.
 *   `frontend/`: Premium Next.js application built with warm cream aesthetics and Framer Motion glassmorphism.
 
@@ -117,24 +118,7 @@ To run the autonomous agent simulation or oracle telemetry feed continually, dep
    * `CIPHERTRUST_ADDRESS`: Address of deployed `CipherTrust.sol`.
 
 ### 3. Database (Supabase / PostgreSQL)
-Initialize the database tables in your Supabase SQL Editor to log agent states and telemetry:
-```sql
-CREATE TABLE agents (
-    id SERIAL PRIMARY KEY,
-    agent_id INT UNIQUE NOT NULL,
-    operator_address VARCHAR(42) NOT NULL,
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    active BOOLEAN DEFAULT TRUE,
-    trust_variance INT DEFAULT 100
-);
-
-CREATE TABLE telemetry_rounds (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agent_id INT REFERENCES agents(agent_id),
-    round_id INT NOT NULL,
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+Initialize your database schema by running the SQL setup script located at [scripts/setup_database.sql](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/scripts/setup_database.sql) inside your Supabase SQL Editor. This script creates the required indexes and schemas for the `agents`, `telemetry_rounds`, `location_proofs`, and `auth_audits` tables.
 
 ---
 
