@@ -1,91 +1,103 @@
-# CipherTrust — Confidential Underwriting Protocol for Autonomous Agents & Robots
+# 🛡️ CipherTrust: Confidential Underwriting for Autonomous Agents & Robots
 
-**Built for the Zama Developer Program — Season 3 ("Composable Privacy Is the Key"), Builder Track.**
+CipherTrust is a decentralized **Confidential Risk Underwriting, Authentication, and Parameter Pricing Engine** designed specifically for the autonomous machine economy (AI trading bots, drone fleets, DePIN nodes, and delivery robots). 
 
----
-
-## 🚀 Overview
-
-CipherTrust is the world's first **Confidential Risk Underwriting and Parameter Pricing Engine** designed specifically for the autonomous machine economy (robots, drone fleets, DePIN nodes, and AI trading bots). 
-
-By leveraging **Fully Homomorphic Encryption (FHE)** via Zama's `fhEVM`, CipherTrust monitors encrypted telemetry and evaluates risk profiles entirely under encryption. The protocol allows third-party smart contracts (e.g. marketplaces, lending platforms, or DAOs) to verify that an autonomous agent is sufficiently bonded and reputable without ever exposing raw server logs, coordinates, or proprietary trade secrets.
+By leveraging **Fully Homomorphic Encryption (FHE)** via secure `fhEVM` pipelines, CipherTrust monitors encrypted telemetry and evaluates risk profiles entirely under encryption. The protocol allows third-party smart contracts (e.g. marketplaces, lending platforms, or DAOs) to verify that an autonomous agent is authenticated, unique, sufficiently bonded, and operating safely without ever exposing raw logs, coordinates, biometrics, or proprietary trade secrets.
 
 ---
 
-## 🔬 Scientific FHE Innovations
+## 🎨 System Design & Architecture
 
-### 1. Encrypted Bayesian Filter (EBF)
-To prevent competitive data leakage, CipherTrust tracks the drone/agent's reputation using a fixed-point Bayesian state estimator. The core trust score mean ($\mu_t$) is kept encrypted as a Zama `euint64` handle, while the estimation uncertainty variance ($\sigma^2_t$) is tracked publicly:
-$$\sigma^2_{t+1} = \frac{\sigma^2_t \cdot \sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}$$
-$$\alpha = \frac{\sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \beta = \frac{\sigma^2_t}{\sigma^2_t + \sigma^2_{obs}}$$
+```mermaid
+graph TD
+    %% Define Node Styles
+    classDef default fill:#FAF8EE,stroke:#D9A711,stroke-width:1.5px,color:#171717;
+    classDef primary fill:#FFFDF0,stroke:#D9A711,stroke-width:2px,color:#B08200,font-weight:bold;
+    
+    %% Elements
+    Agent[Autonomous Agent / Drone]
+    Registry[AgentIdentityRegistry.sol]
+    Core[CipherTrust.sol Risk Engine]
+    Pool[InsurancePool.sol Vault]
+    SB[ReputationBadge.sol NFT]
+    
+    %% Relationships
+    Agent -->|1. Register Identity & Biometrics| Registry
+    Agent -->|2. Encrypted Telemetry / MFA| Core
+    Core -->|3. Evaluate Behavior Drift / Outliers| Core
+    Pool -->|4. Reputation-based Credit Loan| Core
+    Core -->|5. Opt-in Coarse Reveal| SB
+    Core -->|6. SLA Slashing Penalty| Pool
+```
+
+---
+
+## 🔬 Core FHE Capabilities & Mathematical Innovations
+
+### 1. FHE-Passport (Biometric Uniqueness & Sybil Rejections)
+To prevent Sybil attacks by cloning agent IDs, CipherTrust implements biometric passport checks under FHE. It computes the Manhattan distance between a new template $(X, Y, Z)$ and registered database templates $(D_X, D_Y, D_Z)$ entirely in ciphertext:
+$$\text{dist} = |X - D_X| + |Y - D_Y| + |Z - D_Z|$$
+If the distance to any registered template falls below the uniqueness threshold ($\text{dist} \le 10$), the registration fails on-chain.
+
+### 2. FHE-Aegis (AI Behavioral Drift & Rogue Slashing)
+CipherTrust detects compromised or hijacked AI agents by comparing real-time telemetry $(O_T, O_F, O_C)$ against their baseline configuration $(B_T, B_F, B_C)$. Aegis calculates the squared Euclidean distance under FHE:
+$$\text{drift} = (O_T - B_T)^2 + (O_F - B_F)^2 + (O_C - B_C)^2$$
+If the drift exceeds the allowed safety margin, a KMS callback automatically deactivates the agent and slashes their staked bond directly into the `InsurancePool`.
+
+### 3. FHE-Stream (Confidential Salary & Yield Streaming)
+Allows organizations to stream payroll or staking yields to agents with encrypted flow rates per block. The accrued stream yield is calculated under encryption:
+$$\text{accrued} = \text{flowRate} \cdot \Delta B$$
+Decrypted tokens are safely dispatched via secure KMS callbacks directly to the agent's wallet.
+
+### 4. Encrypted Bayesian Filter (EBF)
+Monitors real-time operational reliability. The core trust score mean ($\mu_t$) is kept encrypted as an FHE handle, while the estimation uncertainty variance ($\sigma^2_t$) is tracked publicly:
+$$\sigma^2_{t+1} = \frac{\sigma^2_t \cdot \sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \alpha = \frac{\sigma^2_{obs}}{\sigma^2_t + \sigma^2_{obs}}, \quad \beta = \frac{\sigma^2_t}{\sigma^2_t + \sigma^2_{obs}}$$
 $$\mu_{t+1} = \alpha \cdot \mu_t + \beta \cdot x_{obs}$$
-As the confidence increases (variance decays), the **Uncertainty Premium** dynamically reduces, lowering the agent's required collateral bond.
+As uncertainty decays, the required collateral bond reduces dynamically.
 
-### 2. Encrypted Sensor Outlier Filter (FST)
-To protect the system against sensor spoofing attacks or malicious oracle collusion, the protocol ingests redundant sensor readings ($X_A, X_B$) and calculates their absolute difference entirely under FHE:
-$$\text{compDiff} = |X_A - X_B| = \text{FHE.select}(X_A < X_B, X_B - X_A, X_A - X_B)$$
-If $\text{compDiff} > 2$ (exceeding maximum allowable drift), the filter discards the reading as anomalous, sets the round score to 0, and triggers an SLA hardware penalty.
-
-### 3. Confidential Parametric Claims & Auto-Liquidation
-If an agent's trust score falls below its custom encrypted threshold:
-$$\text{isBreached} = \mu_t < \text{liquidationThreshold}$$
-CipherTrust initiates a single-step async decryption check with Zama's KMS. Rather than using nested decryption callbacks, the contract evaluates the breach flag and calculates the client's pro-rata claim payout simultaneously:
-$$\text{severity} = 1000 - \mu_t$$
-$$\text{payoutAmount} = \frac{\text{coverageLimit} \cdot \text{severity}}{1000}$$
-Upon KMS fulfillment, the callback deactivates the agent, pays out the `payoutAmount` directly to the client, and routes the remainder to the `InsurancePool` LPs to recover underwritten capital.
-
-### 4. Reputation-Based Credit Delegation & Yield curves
-Operators can borrow bond capital from the `InsurancePool` (Credit Delegation). The pool dynamically prices the loan's interest rate (APR) in basis points based on the agent's public reputation tier:
-- **High Trust (Tier 3):** 1% APR
-- **Medium Trust (Tier 2):** 5% APR
-- **Low Trust (Tier 1):** 25% APR
+### 5. FHE-Shield (Anti-Spam Filter) & FHE-Pass (Challenge-Response MFA)
+*   **FHE-Shield:** Filters agent inbox communications using an on-chain encrypted Bayesian categorizer.
+*   **FHE-Pass:** Standard passwordless challenge-response verification entirely under FHE.
 
 ---
 
 ## 🛠️ Repository Structure
 
-*   [contracts/CipherTrust.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/CipherTrust.sol): Core FHE risk pricing engine, Bayesian scoring math, sensor drift filter, and interest/delegation interfaces.
-*   [contracts/InsurancePool.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/InsurancePool.sol): Capital delegation and yield distribution vault for LPs.
-*   [contracts/ReputationBadge.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/ReputationBadge.sol): Soulbound ERC-721 badge showing revealed trust tiers.
-*   [contracts/AgentIdentityRegistry.sol](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/contracts/AgentIdentityRegistry.sol): ERC-8004 portable robotic identity registry.
-*   [test/CipherTrust.test.ts](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/test/CipherTrust.test.ts): Unit test suite running 11 complex FHE operations (100% pass).
-*   [test/SimulateAgent.test.ts](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/test/SimulateAgent.test.ts): Live end-to-end flight, attack, and auto-liquidation simulator with parametric payouts.
-*   [frontend/app/dashboard/page.tsx](file:///C:/Users/salma/.gemini/antigravity/scratch/cipherpool-fhevm/frontend/app/dashboard/page.tsx): Interactive dashboard visualizing all FHE states, sensor drifts, and live credit delegation logs.
+*   `contracts/CipherTrust.sol`: Core FHE risk pricing engine, Bayesian scoring, Aegis drift detectors, and FHE-Stream yield processors.
+*   `contracts/InsurancePool.sol`: ERC-4626 capital vault funded by slashed rogue agent bonds.
+*   `contracts/ReputationBadge.sol`: Soulbound ERC-721 badge showing revealed trust tiers.
+*   `contracts/AgentIdentityRegistry.sol`: ERC-8004 portable identity and passport mapping.
+*   `test/CipherTrust.test.ts`: Complete unit test suite (19 passing tests covering all FHE edge cases).
+*   `frontend/`: Premium Next.js application built with warm cream aesthetics and Framer Motion glassmorphism.
 
 ---
 
 ## 💻 Quickstart
 
-### 1. Hardhat Setup & Verification
+### 1. Hardhat Setup & Test Execution
 Install dependencies:
 ```bash
 npm install
 ```
 
-Compile contracts (configured with `evmVersion: "cancun"` and `viaIR: true` to support `@fhevm/solidity` version `0.8.0` compilation optimization):
+Compile the smart contracts:
 ```bash
 npx hardhat compile
 ```
 
-Run unit tests and FHE mock test cases:
+Run the complete test suite (includes 19 FHE unit tests and simulator scenarios):
 ```bash
 npx hardhat test
 ```
 
-### 2. Live Flight & Attack Simulator Demo
-Run the end-to-end flight, sensor spoofing attack, and auto-liquidation simulator:
-```bash
-npx hardhat test test/SimulateAgent.test.ts
-```
-
-### 3. Frontend App
-Run the interactive Next.js dashboard locally:
+### 2. Run Interactive DApp Dashboard Locally
+Navigate to the frontend folder, install dependencies, and start the development server:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Navigate to `http://localhost:3000/dashboard` to view the control center.
+Open [http://localhost:3000](http://localhost:3000) to access the landing page and control panel.
 
 ---
 
