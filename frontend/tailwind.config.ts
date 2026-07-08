@@ -5,17 +5,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#030014",
-        surface: "#0B0616",
-        border: "#1F1633",
-        brand: {
-          purple: "#7C3AED",
-          cyan: "#22D3EE",
-          green: "#22C55E",
+        background: "#F5F5F2",
+        surface: "#FFFFFF",
+        border: "#E4E4E0",
+        primary: {
+          DEFAULT: "#1A6FD1",
+          dark: "#14559F",
+          light: "#EAF2FC",
         },
+        accent: "#2688DD",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(23,23,23,0.05)",
+        "card-hover": "0 8px 24px rgba(23,23,23,0.08)",
+        button:
+          "0 2px 3px rgba(0,0,0,0.06), 0 0 0.5px 1.5px rgba(255,255,255,0.35) inset, 0 2px 0 rgba(255,255,255,1) inset",
       },
       backgroundImage: {
-        "grid-glow": "radial-gradient(circle at 50% 0%, rgba(124,58,237,0.25), transparent 60%)",
+        "grid-glow":
+          "radial-gradient(circle at 50% 0%, rgba(26,111,209,0.08), transparent 60%)",
       },
     },
   },
