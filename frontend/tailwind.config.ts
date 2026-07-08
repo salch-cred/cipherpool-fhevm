@@ -5,13 +5,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#F5F5F2",
-        surface: "#FFFFFF",
-        border: "#E4E4E0",
+        background: "#FAF8EE",
+        surface: "rgba(255, 255, 255, 0.45)",
+        border: "#E9E5D9",
         primary: {
           DEFAULT: "#1A6FD1",
           dark: "#14559F",
-          light: "#EAF2FC",
+          light: "#FDFBEB",
         },
         accent: "#2688DD",
       },
@@ -27,7 +27,7 @@ const config: Config = {
       },
       backgroundImage: {
         "grid-glow":
-          "radial-gradient(circle at 50% 0%, rgba(26,111,209,0.08), transparent 60%)",
+          "radial-gradient(circle at 50% 0%, rgba(218,165,32,0.12), transparent 60%)",
       },
     },
   },
